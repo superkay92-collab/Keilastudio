@@ -1,0 +1,25 @@
+{
+  "contact": {
+    "email": "keilasstudioextensions@gmail.com",
+    "phone": "+233 XX XXX XXXX",
+    "whatsapp": "233XXXXXXXXX"
+  },
+  "paymentDetails": {
+    "momoName": "Keila's Studio",
+    "momoNumber": "024XXXXXXX",
+    "bankName": "",
+    "accountNumber": "",
+    "accountName": ""
+  },
+  "socials": {
+    "instagram": "@keilas_studio_extensions_",
+    "facebook": "",
+    "tiktok": "@keilas_studio_extensions_"
+  },
+  "store": {
+    "name": "Keila's Studio Extensions",
+    "tagline": "Premium Hair Extensions · Accra, Ghana",
+    "location": "East Legon, Adjiringanor, Accra, Ghana",
+    "currency": "GHS"
+  }
+}
