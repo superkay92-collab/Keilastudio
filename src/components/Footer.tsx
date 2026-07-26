@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 
 const socialLinks = [
   {
@@ -48,13 +47,10 @@ export default function Footer() {
           {/* Brand */}
           <div className="sm:col-span-2">
             <div className="mb-6">
-              <Image
-                src="/logo.png"
-                alt="Keila's Studio Extensions"
-                width={120}
-                height={72}
-                className="h-16 w-auto object-contain"
-              />
+              <span className="flex flex-col leading-none">
+                <span className="text-xl font-bold tracking-tight text-cream italic font-serif">Keila&apos;s Studio</span>
+                <span className="text-[10px] tracking-[0.25em] text-cream/50 uppercase">Extension &middot; Accra</span>
+              </span>
             </div>
             <p className="text-sm text-cream/50 leading-relaxed max-w-xs">
               Accra&apos;s premier destination for luxury hair extensions, wigs

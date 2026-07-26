@@ -2,31 +2,6 @@ import { Product } from "@/types";
 
 export const products: Product[] = [
   {
-    "id": "raw-virgin-body-wave-bundle",
-    "name": "Raw Virgin Body Wave Bundle",
-    "category": "bundles",
-    "price": 1850,
-    "images": [
-      "https://images.unsplash.com/photo-1589156280159-27698a70f29e?w=600&auto=format&fit=crop"
-    ],
-    "description": "Premium Raw Virgin Body Wave Bundle sourced from a single donor. Soft, full and luxurious with natural movement. Can be coloured, bleached and styled exactly like your own hair. Tangle-free and minimal shedding guaranteed.",
-    "specs": {
-      "length": "18\"",
-      "texture": "Body Wave"
-    },
-    "availableLengths": [
-      "12\"",
-      "14\"",
-      "16\"",
-      "18\"",
-      "20\"",
-      "22\"",
-      "24\""
-    ],
-    "inStock": true,
-    "featured": true
-  },
-  {
     "id": "deep-curly-lace-frontal-wig",
     "name": "Deep Curly Lace Frontal Wig",
     "category": "wigs",
@@ -77,29 +52,6 @@ export const products: Product[] = [
     "featured": true
   },
   {
-    "id": "natural-afro-kinky-bundle",
-    "name": "Natural Afro Kinky Bundle",
-    "category": "bundles",
-    "price": 1650,
-    "images": [
-      "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=600&auto=format&fit=crop"
-    ],
-    "description": "Authentic Natural Afro Kinky Coily Bundle. 100% raw human hair with a tight 4C coil pattern. Perfect for blending with natural African-textured hair. No chemicals, no processing — true to source.",
-    "specs": {
-      "length": "18\"",
-      "texture": "Afro Kinky"
-    },
-    "availableLengths": [
-      "10\"",
-      "12\"",
-      "14\"",
-      "16\"",
-      "18\""
-    ],
-    "inStock": true,
-    "featured": true
-  },
-  {
     "id": "straight-hd-lace-wig",
     "name": "Straight HD Lace Front Wig",
     "category": "wigs",
@@ -120,54 +72,6 @@ export const products: Product[] = [
       "24\"",
       "26\"",
       "28\""
-    ],
-    "inStock": false,
-    "featured": false
-  },
-  {
-    "id": "loose-deep-wave-bundle",
-    "name": "Loose Deep Wave Bundle",
-    "category": "bundles",
-    "price": 1700,
-    "images": [
-      "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=600&auto=format&fit=crop"
-    ],
-    "description": "Luxurious Loose Deep Wave Bundle with a gorgeous deep S-wave pattern. Maintains curls wash after wash. 100% virgin hair, never chemically processed. Minimum shedding and tangle-free.",
-    "specs": {
-      "length": "16\"",
-      "texture": "Loose Deep Wave"
-    },
-    "availableLengths": [
-      "12\"",
-      "14\"",
-      "16\"",
-      "18\"",
-      "20\"",
-      "22\""
-    ],
-    "inStock": true,
-    "featured": false
-  },
-  {
-    "id": "hd-lace-closure-4x4",
-    "name": "4×4 HD Lace Closure",
-    "category": "closures-frontals",
-    "price": 950,
-    "images": [
-      "/Closures%20%26%20Frontals/IMG_2787.JPG",
-      "/Closures%20%26%20Frontals/IMG_2788.JPG"
-    ],
-    "description": "4×4 HD Lace Closure with Free/Middle/Three Part options. Ultra-thin lace blends seamlessly with any skin tone. Pre-plucked with baby hair for a natural install. Perfect for sew-ins.",
-    "specs": {
-      "length": "14\"",
-      "texture": "Straight"
-    },
-    "availableLengths": [
-      "10\"",
-      "12\"",
-      "14\"",
-      "16\"",
-      "18\""
     ],
     "inStock": true,
     "featured": false
@@ -217,55 +121,8 @@ export const products: Product[] = [
       "20\"",
       "22\""
     ],
-    "inStock": false,
-    "featured": false
-  },
-  {
-    "id": "burgundy-body-wave-bundle",
-    "name": "Burgundy Body Wave Bundle",
-    "category": "bundles",
-    "price": 2100,
-    "images": [
-      "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=600&auto=format&fit=crop&crop=top"
-    ],
-    "description": "Pre-coloured Burgundy (#99J) Body Wave Bundle. Rich, vibrant colour with no damage to the hair shaft. Full and bouncy body wave texture. Ready to install — no extra colouring required.",
-    "specs": {
-      "length": "18\"",
-      "texture": "Body Wave"
-    },
-    "availableLengths": [
-      "12\"",
-      "14\"",
-      "16\"",
-      "18\"",
-      "20\""
-    ],
     "inStock": true,
-    "featured": false
-  },
-  {
-    "id": "5x5-lace-closure-curly",
-    "name": "5×5 Curly Lace Closure",
-    "category": "closures-frontals",
-    "price": 1100,
-    "images": [
-      "/Closures%20%26%20Frontals/IMG_3446.JPG",
-      "/Closures%20%26%20Frontals/IMG_3662.jpeg"
-    ],
-    "description": "5×5 HD Lace Closure with a natural deep curly pattern. Larger coverage area for a more seamless install. Pre-plucked hairline. Pairs perfectly with our body wave and deep wave bundles.",
-    "specs": {
-      "length": "16\"",
-      "texture": "Curly"
-    },
-    "availableLengths": [
-      "10\"",
-      "12\"",
-      "14\"",
-      "16\"",
-      "18\""
-    ],
-    "inStock": true,
-    "featured": false
+    "featured": true
   },
   {
     "id": "tape-in-extensions-straight",
@@ -311,7 +168,7 @@ export const products: Product[] = [
       "12\"",
       "14\""
     ],
-    "inStock": false,
+    "inStock": true,
     "featured": true
   },
   {
@@ -677,6 +534,720 @@ export const products: Product[] = [
     "inStock": true,
     "featured": false,
     "id": "wave"
+  },
+  {
+    "name": "1",
+    "category": "wigs",
+    "price": 0,
+    "images": [
+      "/uploads/extensions/upload-1785099726054-a11r6.jpg"
+    ],
+    "description": "",
+    "specs": {
+      "length": "",
+      "texture": ""
+    },
+    "availableLengths": [],
+    "inStock": true,
+    "featured": false,
+    "id": "1"
+  },
+  {
+    "name": "2",
+    "category": "wigs",
+    "price": 0,
+    "images": [
+      "/uploads/extensions/upload-1785099755848-bt1zd.jpg"
+    ],
+    "description": "",
+    "specs": {
+      "length": "",
+      "texture": ""
+    },
+    "availableLengths": [],
+    "inStock": true,
+    "featured": false,
+    "id": "2"
+  },
+  {
+    "name": "3",
+    "category": "wigs",
+    "price": 0,
+    "images": [
+      "/uploads/extensions/upload-1785099775826-d3jlv.jpeg"
+    ],
+    "description": "",
+    "specs": {
+      "length": "",
+      "texture": ""
+    },
+    "availableLengths": [],
+    "inStock": true,
+    "featured": false,
+    "id": "3"
+  },
+  {
+    "name": "r4",
+    "category": "wigs",
+    "price": 0,
+    "images": [
+      "/uploads/extensions/upload-1785099787477-doehg.jpg"
+    ],
+    "description": "",
+    "specs": {
+      "length": "",
+      "texture": ""
+    },
+    "availableLengths": [],
+    "inStock": true,
+    "featured": false,
+    "id": "r4"
+  },
+  {
+    "name": "5",
+    "category": "wigs",
+    "price": 0,
+    "images": [
+      "/uploads/extensions/upload-1785099805409-87y7d.jpg"
+    ],
+    "description": "",
+    "specs": {
+      "length": "",
+      "texture": ""
+    },
+    "availableLengths": [],
+    "inStock": true,
+    "featured": false,
+    "id": "5"
+  },
+  {
+    "name": "6",
+    "category": "wigs",
+    "price": 0,
+    "images": [
+      "/uploads/extensions/upload-1785099819853-66w6t.jpg"
+    ],
+    "description": "",
+    "specs": {
+      "length": "",
+      "texture": ""
+    },
+    "availableLengths": [],
+    "inStock": true,
+    "featured": false,
+    "id": "6"
+  },
+  {
+    "name": "12",
+    "category": "wigs",
+    "price": 0,
+    "images": [
+      "/uploads/extensions/upload-1785099835787-okgt7.jpg"
+    ],
+    "description": "",
+    "specs": {
+      "length": "",
+      "texture": ""
+    },
+    "availableLengths": [],
+    "inStock": true,
+    "featured": false,
+    "id": "12"
+  },
+  {
+    "name": "13",
+    "category": "wigs",
+    "price": 0,
+    "images": [
+      "/uploads/extensions/upload-1785099865636-jggni.jpg"
+    ],
+    "description": "",
+    "specs": {
+      "length": "",
+      "texture": ""
+    },
+    "availableLengths": [],
+    "inStock": true,
+    "featured": false,
+    "id": "13"
+  },
+  {
+    "name": "0",
+    "category": "wigs",
+    "price": 0,
+    "images": [
+      "/uploads/extensions/upload-1785099945126-rzamf.jpg"
+    ],
+    "description": "",
+    "specs": {
+      "length": "",
+      "texture": ""
+    },
+    "availableLengths": [],
+    "inStock": true,
+    "featured": false,
+    "id": "0"
+  },
+  {
+    "name": "111",
+    "category": "wigs",
+    "price": 0,
+    "images": [
+      "/uploads/extensions/upload-1785099959564-ntful.jpg"
+    ],
+    "description": "",
+    "specs": {
+      "length": "",
+      "texture": ""
+    },
+    "availableLengths": [],
+    "inStock": true,
+    "featured": false,
+    "id": "111"
+  },
+  {
+    "name": "111",
+    "category": "wigs",
+    "price": 0,
+    "images": [
+      "/uploads/wigs/upload-1785099976802-hl125.jpg"
+    ],
+    "description": "",
+    "specs": {
+      "length": "",
+      "texture": ""
+    },
+    "availableLengths": [],
+    "inStock": true,
+    "featured": false,
+    "id": "111-1785099981108"
+  },
+  {
+    "name": "1111",
+    "category": "wigs",
+    "price": 0,
+    "images": [
+      "/uploads/wigs/upload-1785099998566-3d369.jpg"
+    ],
+    "description": "",
+    "specs": {
+      "length": "",
+      "texture": ""
+    },
+    "availableLengths": [],
+    "inStock": true,
+    "featured": false,
+    "id": "1111"
+  },
+  {
+    "name": "111",
+    "category": "wigs",
+    "price": 0,
+    "images": [
+      "/uploads/extensions/upload-1785100019027-n2ond.jpg"
+    ],
+    "description": "",
+    "specs": {
+      "length": "",
+      "texture": ""
+    },
+    "availableLengths": [],
+    "inStock": true,
+    "featured": false,
+    "id": "111-1785100025191"
+  },
+  {
+    "name": "111",
+    "category": "wigs",
+    "price": 0,
+    "images": [
+      "/uploads/wigs/upload-1785100033376-sc99c.jpg"
+    ],
+    "description": "",
+    "specs": {
+      "length": "",
+      "texture": ""
+    },
+    "availableLengths": [],
+    "inStock": true,
+    "featured": false,
+    "id": "111-1785100036874"
+  },
+  {
+    "name": "111",
+    "category": "wigs",
+    "price": 0,
+    "images": [
+      "/uploads/extensions/upload-1785100044763-f5fh1.jpg"
+    ],
+    "description": "",
+    "specs": {
+      "length": "",
+      "texture": ""
+    },
+    "availableLengths": [],
+    "inStock": true,
+    "featured": false,
+    "id": "111-1785100050360"
+  },
+  {
+    "name": "11",
+    "category": "wigs",
+    "price": 0,
+    "images": [
+      "/uploads/wigs/upload-1785100067193-l3uri.jpg"
+    ],
+    "description": "",
+    "specs": {
+      "length": "",
+      "texture": ""
+    },
+    "availableLengths": [],
+    "inStock": true,
+    "featured": false,
+    "id": "11"
+  },
+  {
+    "name": "11",
+    "category": "wigs",
+    "price": 0,
+    "images": [
+      "/uploads/wigs/upload-1785100081742-ahe6u.jpg"
+    ],
+    "description": "",
+    "specs": {
+      "length": "",
+      "texture": ""
+    },
+    "availableLengths": [],
+    "inStock": true,
+    "featured": false,
+    "id": "11-1785100086094"
+  },
+  {
+    "name": "11",
+    "category": "wigs",
+    "price": 0,
+    "images": [
+      "/uploads/extensions/upload-1785100098117-qpzq5.jpg"
+    ],
+    "description": "",
+    "specs": {
+      "length": "",
+      "texture": ""
+    },
+    "availableLengths": [],
+    "inStock": true,
+    "featured": false,
+    "id": "11-1785100103176"
+  },
+  {
+    "name": "1",
+    "category": "closures-frontals",
+    "price": 0,
+    "images": [
+      "/uploads/extensions/upload-1785100127831-ifcgd.jpg"
+    ],
+    "description": "",
+    "specs": {
+      "length": "",
+      "texture": ""
+    },
+    "availableLengths": [],
+    "inStock": true,
+    "featured": false,
+    "id": "1-1785100132423"
+  },
+  {
+    "name": "1",
+    "category": "closures-frontals",
+    "price": 0,
+    "images": [
+      "/uploads/extensions/upload-1785100139241-jz3w3.jpg"
+    ],
+    "description": "",
+    "specs": {
+      "length": "",
+      "texture": ""
+    },
+    "availableLengths": [],
+    "inStock": true,
+    "featured": false,
+    "id": "1-1785100142655"
+  },
+  {
+    "name": "11",
+    "category": "closures-frontals",
+    "price": 0,
+    "images": [
+      "/uploads/extensions/upload-1785100149767-qqrw7.jpg"
+    ],
+    "description": "",
+    "specs": {
+      "length": "",
+      "texture": ""
+    },
+    "availableLengths": [],
+    "inStock": true,
+    "featured": false,
+    "id": "11-1785100152540"
+  },
+  {
+    "name": "11",
+    "category": "closures-frontals",
+    "price": 0,
+    "images": [
+      "/uploads/extensions/upload-1785100160088-gm19r.jpg"
+    ],
+    "description": "",
+    "specs": {
+      "length": "",
+      "texture": ""
+    },
+    "availableLengths": [],
+    "inStock": true,
+    "featured": false,
+    "id": "11-1785100161580"
+  },
+  {
+    "name": "11",
+    "category": "closures-frontals",
+    "price": 0,
+    "images": [
+      "/uploads/extensions/upload-1785100168121-uzmge.jpg"
+    ],
+    "description": "",
+    "specs": {
+      "length": "",
+      "texture": ""
+    },
+    "availableLengths": [],
+    "inStock": true,
+    "featured": false,
+    "id": "11-1785100170475"
+  },
+  {
+    "name": "11",
+    "category": "closures-frontals",
+    "price": 0,
+    "images": [
+      "/uploads/extensions/upload-1785100179199-2mcx6.jpeg"
+    ],
+    "description": "",
+    "specs": {
+      "length": "",
+      "texture": ""
+    },
+    "availableLengths": [],
+    "inStock": true,
+    "featured": false,
+    "id": "11-1785100181908"
+  },
+  {
+    "name": "11",
+    "category": "closures-frontals",
+    "price": 0,
+    "images": [
+      "/uploads/extensions/upload-1785100188808-1dj5x.jpeg"
+    ],
+    "description": "",
+    "specs": {
+      "length": "",
+      "texture": ""
+    },
+    "availableLengths": [],
+    "inStock": true,
+    "featured": false,
+    "id": "11-1785100191321"
+  },
+  {
+    "name": "11",
+    "category": "closures-frontals",
+    "price": 0,
+    "images": [
+      "/uploads/extensions/upload-1785100197290-96cs4.jpg"
+    ],
+    "description": "",
+    "specs": {
+      "length": "",
+      "texture": ""
+    },
+    "availableLengths": [],
+    "inStock": true,
+    "featured": false,
+    "id": "11-1785100200042"
+  },
+  {
+    "name": "11",
+    "category": "closures-frontals",
+    "price": 0,
+    "images": [
+      "/uploads/extensions/upload-1785100206902-e099d.jpg"
+    ],
+    "description": "",
+    "specs": {
+      "length": "",
+      "texture": ""
+    },
+    "availableLengths": [],
+    "inStock": true,
+    "featured": false,
+    "id": "11-1785100210887"
+  },
+  {
+    "name": "11",
+    "category": "closures-frontals",
+    "price": 0,
+    "images": [
+      "/uploads/extensions/upload-1785100217969-jsfjo.jpg"
+    ],
+    "description": "",
+    "specs": {
+      "length": "",
+      "texture": ""
+    },
+    "availableLengths": [],
+    "inStock": true,
+    "featured": false,
+    "id": "11-1785100221558"
+  },
+  {
+    "name": "11",
+    "category": "closures-frontals",
+    "price": 0,
+    "images": [
+      "/uploads/extensions/upload-1785100230087-3eowv.jpg"
+    ],
+    "description": "",
+    "specs": {
+      "length": "",
+      "texture": ""
+    },
+    "availableLengths": [],
+    "inStock": true,
+    "featured": false,
+    "id": "11-1785100233050"
+  },
+  {
+    "name": "11",
+    "category": "closures-frontals",
+    "price": 0,
+    "images": [
+      "/uploads/extensions/upload-1785100242860-sszuj.jpg"
+    ],
+    "description": "",
+    "specs": {
+      "length": "",
+      "texture": ""
+    },
+    "availableLengths": [],
+    "inStock": true,
+    "featured": false,
+    "id": "11-1785100248351"
+  },
+  {
+    "name": "11",
+    "category": "closures-frontals",
+    "price": 0,
+    "images": [
+      "/uploads/extensions/upload-1785100258303-xtjhp.jpg"
+    ],
+    "description": "",
+    "specs": {
+      "length": "",
+      "texture": ""
+    },
+    "availableLengths": [],
+    "inStock": true,
+    "featured": false,
+    "id": "11-1785100261292"
+  },
+  {
+    "name": "11",
+    "category": "closures-frontals",
+    "price": 0,
+    "images": [
+      "/uploads/extensions/upload-1785100268044-vvptc.jpg"
+    ],
+    "description": "",
+    "specs": {
+      "length": "",
+      "texture": ""
+    },
+    "availableLengths": [],
+    "inStock": true,
+    "featured": false,
+    "id": "11-1785100271116"
+  },
+  {
+    "name": "11",
+    "category": "closures-frontals",
+    "price": 0,
+    "images": [
+      "/uploads/extensions/upload-1785100278070-6ulvk.jpg"
+    ],
+    "description": "",
+    "specs": {
+      "length": "",
+      "texture": ""
+    },
+    "availableLengths": [],
+    "inStock": true,
+    "featured": false,
+    "id": "11-1785100281921"
+  },
+  {
+    "name": "11",
+    "category": "hair-care",
+    "price": 0,
+    "images": [
+      "/uploads/extensions/upload-1785100383226-6zfl5.jpg"
+    ],
+    "description": "",
+    "specs": {
+      "length": "",
+      "texture": ""
+    },
+    "availableLengths": [],
+    "inStock": true,
+    "featured": false,
+    "id": "11-1785100389790"
+  },
+  {
+    "name": "11",
+    "category": "wigs",
+    "price": 0,
+    "images": [
+      "/uploads/wigs/upload-1785100397993-5fm6b.jpeg"
+    ],
+    "description": "",
+    "specs": {
+      "length": "",
+      "texture": ""
+    },
+    "availableLengths": [],
+    "inStock": true,
+    "featured": false,
+    "id": "11-1785100401774"
+  },
+  {
+    "name": "11",
+    "category": "wigs",
+    "price": 0,
+    "images": [
+      "/uploads/wigs/upload-1785100410859-0k2wg.jpeg"
+    ],
+    "description": "",
+    "specs": {
+      "length": "",
+      "texture": ""
+    },
+    "availableLengths": [],
+    "inStock": true,
+    "featured": false,
+    "id": "11-1785100413274"
+  },
+  {
+    "name": "11",
+    "category": "wigs",
+    "price": 0,
+    "images": [
+      "/uploads/wigs/upload-1785100428316-i3o30.jpg"
+    ],
+    "description": "",
+    "specs": {
+      "length": "",
+      "texture": ""
+    },
+    "availableLengths": [],
+    "inStock": true,
+    "featured": false,
+    "id": "11-1785100431647"
+  },
+  {
+    "name": "1",
+    "category": "hair-care",
+    "price": 0,
+    "images": [
+      "/uploads/wigs/upload-1785100444442-g3rop.jpeg"
+    ],
+    "description": "",
+    "specs": {
+      "length": "",
+      "texture": ""
+    },
+    "availableLengths": [],
+    "inStock": true,
+    "featured": false,
+    "id": "1-1785100451043"
+  },
+  {
+    "name": "11",
+    "category": "hair-care",
+    "price": 0,
+    "images": [
+      "/uploads/hair-care/upload-1785100470452-u99k0.jpeg"
+    ],
+    "description": "",
+    "specs": {
+      "length": "",
+      "texture": ""
+    },
+    "availableLengths": [],
+    "inStock": true,
+    "featured": false,
+    "id": "11-1785100474396"
+  },
+  {
+    "name": "11",
+    "category": "hair-care",
+    "price": 0,
+    "images": [
+      "/uploads/hair-care/upload-1785100501220-3v1ev.jpeg"
+    ],
+    "description": "",
+    "specs": {
+      "length": "",
+      "texture": ""
+    },
+    "availableLengths": [],
+    "inStock": true,
+    "featured": false,
+    "id": "11-1785100506770"
+  },
+  {
+    "name": "11",
+    "category": "hair-care",
+    "price": 0,
+    "images": [
+      "/uploads/hair-care/upload-1785100516660-w9h5h.jpeg"
+    ],
+    "description": "",
+    "specs": {
+      "length": "",
+      "texture": ""
+    },
+    "availableLengths": [],
+    "inStock": true,
+    "featured": false,
+    "id": "11-1785100520411"
+  },
+  {
+    "name": "Me ",
+    "category": "extensions",
+    "price": 1200,
+    "images": [
+      "/uploads/extensions/upload-1785101033063-mwmnz.jpg"
+    ],
+    "description": "test ",
+    "specs": {
+      "length": "",
+      "texture": ""
+    },
+    "availableLengths": [],
+    "inStock": true,
+    "featured": false,
+    "id": "me"
   }
 ];
 

@@ -218,7 +218,7 @@ function NavBar({ page, setPage, cartCount }: { page: string; setPage: (p: strin
 
 function SiteFooter({ setPage }: { setPage: (p: string) => void }) {
   return (
-    <div style={{ background: C.oliveDeep }} className="mt-16">
+    <div style={{ background: C.oliveDeep }} className="mt-0">
       <div className="max-w-6xl mx-auto px-5 py-10 grid grid-cols-1 md:grid-cols-3 gap-8">
         <div>
           <span className="f-display" style={{ color: C.blushPale, fontSize: 20 }}>Keilas Studio Extension</span>
@@ -264,7 +264,7 @@ function HomePage({ setPage, addToCart, notify, onOpen, onZoom }: { setPage: (p:
     <div>
       <div className="max-w-6xl mx-auto px-5 pt-12 pb-8 grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
         <div>
-          <span className="f-mono" style={{ color: C.olive, fontSize: 11.5, letterSpacing: 3.5 }}>ACCRA · EAST LEGON · ADJIRINGANOR</span>
+          <span className="f-mono" style={{ color: C.oliveDeep, fontSize: 11.5, letterSpacing: 3.5, fontWeight: 600 }}>ACCRA · EAST LEGON · ADJIRINGANOR</span>
           <h1 className="f-display mt-3" style={{ color: C.oliveDeep, fontSize: 44, lineHeight: 1.08 }}>
             Hair that moves<br />the way you do.
           </h1>
@@ -1097,7 +1097,7 @@ function AboutPage({ setPage }: { setPage: (p: string) => void }) {
                 <div className="rounded-full flex items-center justify-center mb-3" style={{ width: 40, height: 40, background: C.oliveDeep }}>
                   <span className="f-mono" style={{ color: C.blushPale, fontSize: 13, fontWeight: 600 }}>0{i + 1}</span>
                 </div>
-                <h3 className="f-display" style={{ color: C.oliveDeep, fontSize: 16 }}>{s.title}</h3>
+                <h3 className="f-display" style={{ color: C.oliveDeep, fontSize: 19, fontWeight: 700 }}>{s.title}</h3>
                 <p className="f-body mt-1.5" style={{ color: C.ink, fontSize: 13, lineHeight: 1.6, opacity: 0.8 }}>{s.desc}</p>
               </div>
             ))}
@@ -1115,7 +1115,7 @@ function AboutPage({ setPage }: { setPage: (p: string) => void }) {
           </div>
           <div className="flex flex-wrap justify-center gap-3">
             {pillars.map((p, i) => (
-              <div key={i} className="f-body px-4 py-2 rounded-full" style={{ background: i % 2 === 0 ? C.oliveDeep : C.blushPale, color: i % 2 === 0 ? C.cream : C.oliveDeep, fontSize: 13, fontWeight: 500 }}>
+              <div key={i} className="f-body px-4 py-2 rounded-full" style={{ background: C.blushPale, color: C.oliveDeep, fontSize: 13, fontWeight: 500, border: `1px solid ${C.blush}` }}>
                 {p}
               </div>
             ))}
