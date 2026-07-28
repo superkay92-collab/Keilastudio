@@ -7,7 +7,7 @@ import { LayoutDashboard, Package, ShoppingBag, LogOut, Settings } from "lucide-
 import clsx from "clsx";
 
 const ADMIN_PASSWORD =
-  process.env.NEXT_PUBLIC_ADMIN_PASSWORD ?? "admin123";
+  process.env.NEXT_PUBLIC_ADMIN_PASSWORD ?? "6607";
 
 const NAV = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
