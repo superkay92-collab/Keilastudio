@@ -114,6 +114,12 @@ export default function CheckoutPage() {
     const order = buildOrder(ref, method);
     saveOrder(order);
     clearCart();
+    // Fire-and-forget: email confirmation to customer + admin
+    fetch("/api/notify-order", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(order),
+    }).catch(() => {});
     router.push(`/checkout/success?orderId=${order.id}`);
   }
 
