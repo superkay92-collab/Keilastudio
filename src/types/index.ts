@@ -39,7 +39,7 @@ export interface Order {
   customerEmail: string;
   customerPhone: string;
   shippingAddress: ShippingAddress;
-  paymentMethod: "paystack" | "flutterwave";
+  paymentMethod: "paystack" | "flutterwave" | "momo";
   paymentReference?: string;
   createdAt: string;
   updatedAt: string;

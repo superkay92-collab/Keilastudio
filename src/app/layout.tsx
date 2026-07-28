@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import "../styles/effects.css";
+import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
   title: "Keilas Studio Extension | Premium Hair — Accra",
@@ -17,6 +18,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <main>{children}</main>
+        <Analytics />
       </body>
     </html>
   );

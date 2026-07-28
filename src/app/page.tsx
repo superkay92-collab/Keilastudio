@@ -418,7 +418,7 @@ function ProductModal({ product, index, onClose, addToCart, notify, onZoom }: { 
                 product.origin !== "-" && ["Origin", product.origin],
                 product.density !== "-" && ["Density", product.density],
                 ["Shipping", product.shipping],
-              ].filter(Boolean).map(([k, v]) => (
+              ].filter((x): x is string[] => Boolean(x)).map(([k, v]) => (
                 <div key={k as string} className="rounded-lg px-3 py-2" style={{ background: C.blushPale }}>
                   <span className="f-mono block" style={{ fontSize: 9.5, color: C.olive, letterSpacing: 1 }}>{(k as string).toUpperCase()}</span>
                   <span className="f-body" style={{ fontSize: 12.5, color: C.oliveDeep, fontWeight: 600 }}>{v as string}</span>

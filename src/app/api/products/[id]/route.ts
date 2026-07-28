@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import type { Product } from "@/types";
-import { readProducts, saveProducts } from "../route";
+import { readProducts, saveProducts } from "@/lib/productStorage";
 
 type Params = { params: Promise<{ id: string }> };
 
