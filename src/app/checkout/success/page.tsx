@@ -4,7 +4,7 @@ import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
 import { CheckCircle, Package, ArrowRight } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import { getStatusLabel } from "@/lib/orders";
+import { getStatusLabel } from "@/lib/orderUtils";
 import type { Order } from "@/types";
 
 function SuccessContent() {

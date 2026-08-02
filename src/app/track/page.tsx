@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Search, Package, Truck, CheckCircle, Clock } from "lucide-react";
-import { getStatusStep } from "@/lib/orders";
+import { getStatusStep } from "@/lib/orderUtils";
 import type { Order } from "@/types";
 
 const STEPS = [

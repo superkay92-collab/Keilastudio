@@ -9,7 +9,7 @@ import { ArrowLeft, CreditCard, Smartphone } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useCurrency } from "@/context/CurrencyContext";
 import { formatPrice } from "@/lib/currency";
-import { generateOrderId } from "@/lib/orders";
+import { generateOrderId } from "@/lib/orderUtils";
 import type { Order } from "@/types";
 import toast from "react-hot-toast";
 

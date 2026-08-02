@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ShoppingBag, TrendingUp, Package, Clock } from "lucide-react";
-import { getAllOrders } from "@/lib/orders";
 import type { Order } from "@/types";
 
 const STATUS_COLORS: Record<Order["status"], string> = {
@@ -17,7 +16,9 @@ export default function AdminDashboard() {
   const [orders, setOrders] = useState<Order[]>([]);
 
   useEffect(() => {
-    getAllOrders().then((data) => setOrders([...data].reverse()));
+    fetch("/api/orders")
+      .then((r) => r.json())
+      .then((data) => setOrders(data.orders ?? []));
   }, []);
 
   const revenue = orders.reduce((s, o) => s + o.total, 0);
