@@ -17,7 +17,7 @@ export default function AdminDashboard() {
   const [orders, setOrders] = useState<Order[]>([]);
 
   useEffect(() => {
-    setOrders(getAllOrders().reverse());
+    getAllOrders().then((data) => setOrders([...data].reverse()));
   }, []);
 
   const revenue = orders.reduce((s, o) => s + o.total, 0);
