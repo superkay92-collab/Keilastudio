@@ -22,6 +22,7 @@ export function useReveal(options = {}) {
     );
     observer.observe(el);
     return () => observer.disconnect();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return { ref, visible };

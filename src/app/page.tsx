@@ -1,4 +1,5 @@
 "use client";
+/* eslint-disable @next/next/no-img-element */
 
 import { useEffect, useRef, useState } from "react";
 import { Reveal } from "../components/Reveal";
@@ -54,42 +55,6 @@ function WaveUnderline({ color = C.olive, width = 120 }: { color?: string; width
   );
 }
 
-const CATEGORY_HUES: Record<string, [string, string]> = {
-  Bundles: [C.olive, C.oliveSoft],
-  "Closures & Frontals": [C.oliveDeep, C.blush],
-  Wigs: [C.blush, C.oliveSoft],
-  "Clip-Ins": [C.oliveSoft, C.blush],
-  "Hair Care": [C.oliveDeep, C.oliveSoft],
-};
-
-function ProductSwatch({ seed = 0, category }: { seed?: number; category: string }) {
-  const [c1, c2] = CATEGORY_HUES[category] || [C.olive, C.blush];
-  const rows = [0, 1, 2, 3, 4, 5];
-  return (
-    <svg viewBox="0 0 200 200" style={{ width: "100%", height: "100%", display: "block" }}>
-      <defs>
-        <linearGradient id={`grad-${seed}`} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor={c1} />
-          <stop offset="1" stopColor={c2} />
-        </linearGradient>
-      </defs>
-      <rect width="200" height="200" fill={C.blushPale} />
-      <rect width="200" height="200" fill={`url(#grad-${seed})`} opacity="0.22" />
-      {rows.map((i) => (
-        <path
-          key={i}
-          d={`M ${-20 + ((seed * 7) % 20)} ${20 + i * 30} Q 60 ${2 + i * 30 + (i % 2 ? 14 : -14)} 100 ${20 + i * 30} T 220 ${20 + i * 30}`}
-          fill="none"
-          stroke={c1}
-          strokeWidth="3.5"
-          strokeOpacity="0.55"
-          strokeLinecap="round"
-        />
-      ))}
-    </svg>
-  );
-}
-
 // ---------- Data ----------
 const CAT_DISPLAY: Record<string, string> = {
   "extensions": "Extensions",
@@ -138,13 +103,13 @@ function cedis(n: number) { return `GH₵ ${n.toFixed(2)}`; }
 
 // ---------- localStorage helpers ----------
 function storageSet(key: string, value: string) {
-  try { localStorage.setItem(key, value); } catch (e) {}
+  try { localStorage.setItem(key, value); } catch {}
 }
 function storageGet(key: string): string | null {
-  try { return localStorage.getItem(key); } catch (e) { return null; }
+  try { return localStorage.getItem(key); } catch { return null; }
 }
 function storageListKeys(prefix: string): string[] {
-  try { return Object.keys(localStorage).filter((k) => k.startsWith(prefix)); } catch (e) { return []; }
+  try { return Object.keys(localStorage).filter((k) => k.startsWith(prefix)); } catch { return []; }
 }
 
 // ---------- Types ----------
@@ -305,7 +270,7 @@ function HomePage({ setPage, addToCart, notify, onOpen, onZoom }: { setPage: (p:
           </button>
         </div>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
-          {featured.map((p, i) => <Reveal key={p.id} delay={i * 70}><ProductCardItem product={p} index={i} addToCart={addToCart} notify={notify} onOpen={onOpen} onZoom={onZoom} /></Reveal>)}
+          {featured.map((p, i) => <Reveal key={p.id} delay={i * 70}><ProductCardItem product={p} addToCart={addToCart} notify={notify} onOpen={onOpen} onZoom={onZoom} /></Reveal>)}
         </div>
 
         {/* Quality seals */}
@@ -347,7 +312,7 @@ function Lightbox({ src, onClose }: { src: string; onClose: () => void }) {
   );
 }
 
-function ProductCardItem({ product, index, addToCart, notify, onOpen, onZoom }: { product: typeof PRODUCTS[0]; index: number; addToCart: (id: string) => void; notify: (msg: string) => void; onOpen: (p: typeof PRODUCTS[0]) => void; onZoom: (src: string) => void }) {
+function ProductCardItem({ product, addToCart, notify, onOpen, onZoom }: { product: typeof PRODUCTS[0]; addToCart: (id: string) => void; notify: (msg: string) => void; onOpen: (p: typeof PRODUCTS[0]) => void; onZoom: (src: string) => void }) {
   return (
     <div className="rounded-xl overflow-hidden flex flex-col card-hover" style={{ background: C.white, border: `1px solid ${C.oliveSoft}44` }}>
       <div className="aspect-square card-image">
@@ -389,7 +354,7 @@ function ProductCardItem({ product, index, addToCart, notify, onOpen, onZoom }: 
 }
 
 // ---------- Product Detail Modal ----------
-function ProductModal({ product, index, onClose, addToCart, notify, onZoom }: { product: typeof PRODUCTS[0]; index: number; onClose: () => void; addToCart: (id: string) => void; notify: (msg: string) => void; onZoom: (src: string) => void }) {
+function ProductModal({ product, onClose, addToCart, notify, onZoom }: { product: typeof PRODUCTS[0]; onClose: () => void; addToCart: (id: string) => void; notify: (msg: string) => void; onZoom: (src: string) => void }) {
   const [selectedLength, setSelectedLength] = useState(product.lengths[0] || product.spec);
   const waMsg = encodeURIComponent(`Hi! I'm interested in the ${product.name}${product.lengths.length ? ` (${selectedLength})` : ""}. Could you give me more details?`);
 
@@ -514,7 +479,7 @@ function ShopPage({ addToCart, notify, onOpen, onZoom }: { addToCart: (id: strin
         </div>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5">
-        {filtered.map((p, i) => <Reveal key={p.id} delay={i * 50}><ProductCardItem product={p} index={i} addToCart={addToCart} notify={notify} onOpen={onOpen} onZoom={onZoom} /></Reveal>)}
+        {filtered.map((p, i) => <Reveal key={p.id} delay={i * 50}><ProductCardItem product={p} addToCart={addToCart} notify={notify} onOpen={onOpen} onZoom={onZoom} /></Reveal>)}
       </div>
       {filtered.length === 0 && <p className="f-body text-center py-16" style={{ color: C.ink, opacity: 0.6 }}>No products match that search.</p>}
     </div>
@@ -617,7 +582,7 @@ function CheckoutPage({ cart, setCart, setPage, setLastOrder }: { cart: CartItem
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(order),
       }).catch(() => {});
-    } catch (e) { setError("Something went wrong saving your order. Please try again."); }
+    } catch { setError("Something went wrong saving your order. Please try again."); }
     setPlacing(false);
   };
 
@@ -833,7 +798,15 @@ function TrackOrderPage({ prefillId }: { prefillId?: string }) {
   const [order, setOrder] = useState<Order | null>(null);
   const [status, setStatus] = useState<"idle" | "loading" | "notfound" | "found">("idle");
 
-  useEffect(() => { if (prefillId) lookup(prefillId); }, [prefillId]);
+  useEffect(() => {
+    if (!prefillId) return;
+    const target = prefillId.trim();
+    if (!target) return;
+    setStatus("loading");
+    const raw = storageGet(`order:${target}`);
+    if (raw) { setOrder(JSON.parse(raw)); setStatus("found"); }
+    else { setOrder(null); setStatus("notfound"); }
+  }, [prefillId]);
 
   const lookup = (lookupId?: string) => {
     const target = (lookupId || id).trim();
@@ -924,7 +897,7 @@ function AdminPage() {
     const all: Order[] = [];
     for (const k of keys) {
       const raw = storageGet(k);
-      if (raw) { try { all.push(JSON.parse(raw)); } catch (e) {} }
+      if (raw) { try { all.push(JSON.parse(raw)); } catch {} }
     }
     all.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     setOrders(all);
@@ -1180,7 +1153,6 @@ export default function App() {
       {modalProduct && (
         <ProductModal
           product={modalProduct}
-          index={PRODUCTS.findIndex(p => p.id === modalProduct.id)}
           onClose={() => setModalProduct(null)}
           addToCart={addToCart}
           notify={notify}
