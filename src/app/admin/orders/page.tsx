@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getAllOrders, updateOrderStatus } from "@/lib/orders";
 import type { Order } from "@/types";
 import toast from "react-hot-toast";
 
@@ -23,16 +22,23 @@ export default function AdminOrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [filter, setFilter] = useState<"all" | Order["status"]>("all");
 
-  function load() {
-    setOrders(getAllOrders().reverse());
+  async function load() {
+    const res = await fetch("/api/orders");
+    const data = await res.json();
+    setOrders(data.orders ?? []);
   }
 
   useEffect(() => {
     load();
   }, []);
 
-  function handleStatusChange(id: string, status: Order["status"]) {
-    if (updateOrderStatus(id, status)) {
+  async function handleStatusChange(id: string, status: Order["status"]) {
+    const res = await fetch(`/api/orders/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status }),
+    });
+    if (res.ok) {
       toast.success("Status updated");
       load();
     }

@@ -4,7 +4,7 @@ import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
 import { CheckCircle, Package, ArrowRight } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import { getOrderById, getStatusLabel } from "@/lib/orders";
+import { getStatusLabel } from "@/lib/orders";
 import type { Order } from "@/types";
 
 function SuccessContent() {
@@ -13,10 +13,10 @@ function SuccessContent() {
   const [order, setOrder] = useState<Order | null>(null);
 
   useEffect(() => {
-    if (orderId) {
-      const found = getOrderById(orderId);
-      if (found) setOrder(found);
-    }
+    if (!orderId) return;
+    fetch(`/api/orders/${orderId}`)
+      .then((r) => r.json())
+      .then((d) => { if (d.ok) setOrder(d.order); });
   }, [orderId]);
 
   return (

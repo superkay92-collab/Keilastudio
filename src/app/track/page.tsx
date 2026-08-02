@@ -3,11 +3,7 @@
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Search, Package, Truck, CheckCircle, Clock } from "lucide-react";
-import {
-  getOrderById,
-  getOrdersByEmail,
-  getStatusStep,
-} from "@/lib/orders";
+import { getStatusStep } from "@/lib/orders";
 import type { Order } from "@/types";
 
 const STEPS = [
@@ -152,21 +148,20 @@ function TrackContent() {
   useEffect(() => {
     const id = searchParams.get("orderId");
     if (id) {
-      const found = getOrderById(id);
-      if (found) {
-        setOrders([found]);
-        setSearched(true);
-      }
+      fetch(`/api/orders/${encodeURIComponent(id)}`)
+        .then((r) => r.json())
+        .then((d) => { if (d.ok) { setOrders([d.order]); setSearched(true); } });
     }
   }, [searchParams]);
 
-  function search() {
+  async function search() {
     if (!query.trim()) return;
     if (mode === "id") {
-      const found = getOrderById(query.trim());
-      setOrders(found ? [found] : []);
+      const d = await fetch(`/api/orders/${encodeURIComponent(query.trim())}`).then((r) => r.json());
+      setOrders(d.ok ? [d.order] : []);
     } else {
-      setOrders(getOrdersByEmail(query.trim()));
+      const d = await fetch(`/api/orders?email=${encodeURIComponent(query.trim())}`).then((r) => r.json());
+      setOrders(d.orders ?? []);
     }
     setSearched(true);
   }

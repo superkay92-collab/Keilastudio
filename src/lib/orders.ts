@@ -1,47 +1,81 @@
-import { Order } from "@/types";
+import { supabase } from "@/lib/supabase";
+import type { Order } from "@/types";
 
-const STORAGE_KEY = "keila_studio_orders";
-
-export function saveOrder(order: Order): void {
-  if (typeof window === "undefined") return;
-  const orders = getAllOrders();
-  orders.push(order);
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(orders));
+export async function saveOrder(order: Order): Promise<void> {
+  const { error } = await supabase
+    .from("orders")
+    .upsert({ id: order.id, data: order });
+  if (error) throw new Error(error.message);
 }
 
-export function getAllOrders(): Order[] {
-  if (typeof window === "undefined") return [];
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    return stored ? (JSON.parse(stored) as Order[]) : [];
-  } catch {
-    return [];
-  }
+export async function getAllOrders(): Promise<Order[]> {
+  const { data, error } = await supabase
+    .from("orders")
+    .select("data")
+    .order("created_at", { ascending: false });
+  if (error) throw new Error(error.message);
+  return (data ?? []).map((row) => row.data as Order);
 }
 
-export function getOrderById(id: string): Order | undefined {
-  return getAllOrders().find((o) => o.id === id);
+export async function getOrderById(id: string): Promise<Order | undefined> {
+  const { data, error } = await supabase
+    .from("orders")
+    .select("data")
+    .eq("id", id)
+    .single();
+  if (error || !data) return undefined;
+  return data.data as Order;
 }
 
-export function getOrdersByEmail(email: string): Order[] {
-  return getAllOrders().filter(
-    (o) => o.customerEmail.toLowerCase() === email.toLowerCase()
-  );
+export async function getOrdersByEmail(email: string): Promise<Order[]> {
+  const all = await getAllOrders();
+  const q = email.trim().toLowerCase();
+  return all.filter((o) => o.customerEmail?.toLowerCase() === q);
 }
 
-export function updateOrderStatus(
+export async function updateOrderStatus(
   id: string,
   status: Order["status"]
-): boolean {
-  if (typeof window === "undefined") return false;
-  const orders = getAllOrders();
-  const idx = orders.findIndex((o) => o.id === id);
-  if (idx === -1) return false;
-  orders[idx].status = status;
-  orders[idx].updatedAt = new Date().toISOString();
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(orders));
-  return true;
+): Promise<boolean> {
+  const { data: row, error: fetchErr } = await supabase
+    .from("orders")
+    .select("data")
+    .eq("id", id)
+    .single();
+  if (fetchErr || !row) return false;
+  const updated: Order = {
+    ...(row.data as Order),
+    status,
+    updatedAt: new Date().toISOString(),
+  };
+  const { error } = await supabase
+    .from("orders")
+    .update({ data: updated })
+    .eq("id", id);
+  return !error;
 }
+
+export function generateOrderId(): string {
+  const ts = Date.now().toString(36).toUpperCase();
+  const rnd = Math.random().toString(36).substring(2, 6).toUpperCase();
+  return `KSE-${ts}-${rnd}`;
+}
+
+export function getStatusLabel(status: Order["status"]): string {
+  const labels: Record<Order["status"], string> = {
+    pending: "Order Received",
+    processing: "Processing",
+    shipped: "Shipped",
+    delivered: "Delivered",
+  };
+  return labels[status];
+}
+
+export function getStatusStep(status: Order["status"]): number {
+  const steps: Order["status"][] = ["pending", "processing", "shipped", "delivered"];
+  return steps.indexOf(status);
+}
+
 
 export function generateOrderId(): string {
   const ts = Date.now().toString(36).toUpperCase();

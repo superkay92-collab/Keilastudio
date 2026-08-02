@@ -27,7 +27,7 @@ function maskEmail(email: string): string {
 
 async function sendOTP(subject: string, otp: string, to: string) {
   const from = process.env.RESEND_FROM ?? "onboarding@resend.dev";
-  await resend.emails.send({
+  const { data, error } = await resend.emails.send({
     from: `Keila's Studio <${from}>`,
     to,
     subject,
@@ -40,6 +40,11 @@ async function sendOTP(subject: string, otp: string, to: string) {
       </div>
     `,
   });
+  if (error) {
+    console.error("[Resend] Failed to send OTP:", JSON.stringify(error));
+    throw new Error(error.message ?? "Resend error");
+  }
+  console.log("[Resend] OTP sent, id:", data?.id);
 }
 
 // GET — verify existing session

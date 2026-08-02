@@ -125,7 +125,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           {/* ── Password ── */}
           {state === "password" && (
             <form onSubmit={handleLogin} className="space-y-4">
-              <input type="password" value={password} onChange={(e) => setPassword(e.target.value)}
+              <input id="admin-password" name="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)}
                 placeholder="Admin Password" autoComplete="current-password" required className={inputCls} />
               {error && <p className="text-red-500 text-xs">{error}</p>}
               <button type="submit" disabled={loading} className={btnCls}>
@@ -145,7 +145,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                 A 6-digit code was sent to{" "}
                 <span className="font-medium text-charcoal">{maskedEmail}</span>
               </p>
-              <input type="text" inputMode="numeric" maxLength={6} value={otp}
+              <input id="admin-otp" name="otp" type="text" inputMode="numeric" maxLength={6} value={otp}
                 onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
                 placeholder="000000" required autoFocus
                 className={`${inputCls} text-center tracking-[0.5em]`} />
@@ -179,13 +179,13 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
               <p className="text-xs text-center text-muted">
                 Code sent to <span className="font-medium text-charcoal">{maskedEmail}</span>
               </p>
-              <input type="text" inputMode="numeric" maxLength={6} value={otp}
+              <input id="admin-reset-otp" name="reset-otp" type="text" inputMode="numeric" maxLength={6} value={otp}
                 onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
                 placeholder="Reset code" required autoFocus
                 className={`${inputCls} text-center tracking-[0.5em]`} />
-              <input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)}
+              <input id="admin-new-password" name="new-password" type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)}
                 placeholder="New password" required className={inputCls} />
-              <input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
+              <input id="admin-confirm-password" name="confirm-password" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="Confirm new password" required className={inputCls} />
               {error && <p className="text-red-500 text-xs">{error}</p>}
               <button type="submit" disabled={loading || otp.length !== 6 || !newPassword} className={btnCls}>

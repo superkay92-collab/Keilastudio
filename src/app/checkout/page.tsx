@@ -9,7 +9,7 @@ import { ArrowLeft, CreditCard, Smartphone } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useCurrency } from "@/context/CurrencyContext";
 import { formatPrice } from "@/lib/currency";
-import { saveOrder, generateOrderId } from "@/lib/orders";
+import { generateOrderId } from "@/lib/orders";
 import type { Order } from "@/types";
 import toast from "react-hot-toast";
 
@@ -112,14 +112,18 @@ export default function CheckoutPage() {
 
   function onSuccess(ref: string, method: PayMethod) {
     const order = buildOrder(ref, method);
-    saveOrder(order);
-    clearCart();
-    // Fire-and-forget: email confirmation to customer + admin
+    // Save to Supabase + send confirmation email (fire-and-forget)
+    fetch("/api/orders", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(order),
+    }).catch(() => {});
     fetch("/api/notify-order", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(order),
     }).catch(() => {});
+    clearCart();
     router.push(`/checkout/success?orderId=${order.id}`);
   }
 

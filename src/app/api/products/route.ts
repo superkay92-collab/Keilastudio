@@ -4,13 +4,13 @@ import { readProducts, saveProducts } from "@/lib/productStorage";
 
 // GET /api/products
 export async function GET() {
-  return NextResponse.json(readProducts());
+  return NextResponse.json(await readProducts());
 }
 
 // POST /api/products  — create
 export async function POST(req: NextRequest) {
   const body = await req.json() as Product;
-  const list = readProducts();
+  const list = await readProducts();
 
   const id =
     body.id ||
@@ -25,6 +25,6 @@ export async function POST(req: NextRequest) {
 
   const newProduct: Product = { ...body, id: finalId };
   list.push(newProduct);
-  saveProducts(list);
+  await saveProducts(list);
   return NextResponse.json(newProduct, { status: 201 });
 }
