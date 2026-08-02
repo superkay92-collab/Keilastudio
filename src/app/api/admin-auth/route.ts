@@ -70,9 +70,10 @@ export async function POST(req: NextRequest) {
     const email = getAdminEmail();
     try {
       await sendOTP("Your login verification code", otp, email);
-    } catch {
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
       return NextResponse.json(
-        { ok: false, error: "Could not send email — check RESEND_API_KEY and RESEND_FROM in your environment variables." },
+        { ok: false, error: `Could not send email: ${msg}` },
         { status: 500 }
       );
     }
@@ -97,8 +98,9 @@ export async function POST(req: NextRequest) {
     const email = getAdminEmail();
     try {
       await sendOTP("Your password reset code", otp, email);
-    } catch {
-      return NextResponse.json({ ok: false, error: "Could not send email" }, { status: 500 });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      return NextResponse.json({ ok: false, error: `Could not send email: ${msg}` }, { status: 500 });
     }
     return NextResponse.json({ ok: true, otpToken, maskedEmail: maskEmail(email) });
   }
