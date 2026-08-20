@@ -3,8 +3,7 @@
 import { useState, useMemo, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import ProductCard from "@/components/ProductCard";
-import { products } from "@/lib/products";
-import type { Category } from "@/types";
+import type { Category, Product } from "@/types";
 import clsx from "clsx";
 
 const CATEGORIES: { value: Category; label: string }[] = [
@@ -27,6 +26,22 @@ function CategorySync({ onCategory }: { onCategory: (c: Category) => void }) {
 export default function ShopPage() {
   const [activeCategory, setActiveCategory] = useState<Category>("all");
   const [sortBy, setSortBy] = useState<"default" | "price-asc" | "price-desc">("default");
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/products", { cache: "no-store" });
+        const data = (await res.json()) as Product[];
+        if (!cancelled) setProducts(Array.isArray(data) ? data : []);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
 
   const filtered = useMemo(() => {
     let list =
@@ -36,7 +51,7 @@ export default function ShopPage() {
     if (sortBy === "price-asc") list = [...list].sort((a, b) => a.price - b.price);
     if (sortBy === "price-desc") list = [...list].sort((a, b) => b.price - a.price);
     return list;
-  }, [activeCategory, sortBy]);
+  }, [activeCategory, sortBy, products]);
 
   return (
     <div className="pt-28 pb-24 max-w-7xl mx-auto px-4 sm:px-6">
@@ -83,7 +98,9 @@ export default function ShopPage() {
       </div>
 
       {/* Product grid */}
-      {filtered.length === 0 ? (
+      {loading ? (
+        <p className="text-center py-20 text-muted">Loading products…</p>
+      ) : filtered.length === 0 ? (
         <p className="text-center py-20 text-muted">
           No products in this category.
         </p>

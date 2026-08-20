@@ -63,23 +63,27 @@ const CAT_DISPLAY: Record<string, string> = {
   "hair-care": "Hair Care",
 };
 
-const PRODUCTS = libProducts.map((p) => ({
-  id: p.id,
-  name: p.name,
-  category: CAT_DISPLAY[p.category] || p.category,
-  texture: "-" as string,
-  spec: "" as string,
-  price: p.price,
-  inStock: p.inStock,
-  origin: "-" as string,
-  density: "-" as string,
-  lengths: [] as string[],
-  colors: [] as string[],
-  care: "" as string,
-  shipping: "2\u20134 business days",
-  desc: p.description || "",
-  image: p.images?.[0] || "",
-}));
+function mapProduct(p: (typeof libProducts)[0]) {
+  return {
+    id: p.id,
+    name: p.name,
+    category: CAT_DISPLAY[p.category] || p.category,
+    texture: "-" as string,
+    spec: "" as string,
+    price: p.price,
+    inStock: p.inStock,
+    origin: "-" as string,
+    density: "-" as string,
+    lengths: [] as string[],
+    colors: [] as string[],
+    care: "" as string,
+    shipping: "2\u20134 business days",
+    desc: p.description || "",
+    image: p.images?.[0] || "",
+  };
+}
+
+let PRODUCTS = libProducts.map(mapProduct);
 
 const CATEGORIES = ["All", "Extensions", "Closures & Frontals", "Wigs", "Hair Care"];
 
@@ -1116,7 +1120,22 @@ export default function App() {
   const [toast, setToast] = useState("");
   const [modalProduct, setModalProduct] = useState<typeof PRODUCTS[0] | null>(null);
   const [lightboxImg, setLightboxImg] = useState<string | null>(null);
+  const [, forceRerender] = useState(0);
   const zoomImg = (src: string) => setLightboxImg(src);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/products", { cache: "no-store" });
+        const data = await res.json();
+        if (cancelled || !Array.isArray(data)) return;
+        PRODUCTS = data.map(mapProduct);
+        forceRerender((n) => n + 1);
+      } catch {}
+    })();
+    return () => { cancelled = true; };
+  }, []);
 
   const addToCart = (productId: string) => {
     setCart((prev) => {

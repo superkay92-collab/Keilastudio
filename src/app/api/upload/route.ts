@@ -1,12 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
+import { requireAdmin } from "@/lib/requireAdmin";
 
 const MAX_SIZE = 10 * 1024 * 1024; // 10 MB
 const ALLOWED_TYPES = new Set(["image/jpeg", "image/jpg", "image/png", "image/webp", "image/gif"]);
 const ALLOWED_CATEGORIES = new Set(["extensions", "closures-frontals", "wigs", "hair-care"]);
 
 export async function POST(req: NextRequest) {
+  const unauth = requireAdmin(req);
+  if (unauth) return unauth;
   const formData = await req.formData();
   const file = formData.get("file") as File | null;
   const rawCategory = (formData.get("category") as string | null) ?? "";

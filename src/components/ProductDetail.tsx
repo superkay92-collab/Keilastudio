@@ -5,23 +5,18 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, ShoppingBag, Check } from "lucide-react";
 import type { Product } from "@/types";
-import { products } from "@/lib/products";
 import { useCart } from "@/context/CartContext";
 import { useCurrency } from "@/context/CurrencyContext";
 import { formatPrice } from "@/lib/currency";
 import ProductCard from "@/components/ProductCard";
 import toast from "react-hot-toast";
 
-export default function ProductDetail({ product }: { product: Product }) {
+export default function ProductDetail({ product, related = [] }: { product: Product; related?: Product[] }) {
   const { addItem } = useCart();
   const { currency } = useCurrency();
   const [selectedLength, setSelectedLength] = useState(product.specs.length);
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
-
-  const related = products
-    .filter((p) => p.category === product.category && p.id !== product.id)
-    .slice(0, 4);
 
   function handleAddToCart() {
     addItem(product, quantity, selectedLength);

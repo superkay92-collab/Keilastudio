@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import type { Product } from "@/types";
 import { readProducts, saveProducts } from "@/lib/productStorage";
+import { requireAdmin } from "@/lib/requireAdmin";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -15,6 +16,8 @@ export async function GET(_req: NextRequest, { params }: Params) {
 
 // PUT /api/products/[id]  — update
 export async function PUT(req: NextRequest, { params }: Params) {
+  const unauth = requireAdmin(req);
+  if (unauth) return unauth;
   const { id } = await params;
   const body = await req.json() as Partial<Product>;
   const list = await readProducts();
@@ -26,7 +29,9 @@ export async function PUT(req: NextRequest, { params }: Params) {
 }
 
 // DELETE /api/products/[id]
-export async function DELETE(_req: NextRequest, { params }: Params) {
+export async function DELETE(req: NextRequest, { params }: Params) {
+  const unauth = requireAdmin(req);
+  if (unauth) return unauth;
   const { id } = await params;
   const list = await readProducts();
   const filtered = list.filter((p) => p.id !== id);

@@ -6,9 +6,17 @@ const fs = require("fs");
 const path = require("path");
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
-const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY ?? "";
+const SUPABASE_KEY =
+  process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.SUPABASE_SECRET_KEY ?? "";
 
 async function main() {
+  if (!SUPABASE_URL || !SUPABASE_KEY) {
+    console.error(
+      "ERROR: Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SECRET_KEY / SUPABASE_SERVICE_ROLE_KEY. " +
+        "Run with: node --env-file=.env.local scripts/seed-products.js"
+    );
+    process.exit(1);
+  }
   const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
   const filePath = path.join(__dirname, "..", "data", "products.json");

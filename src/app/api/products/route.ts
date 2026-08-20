@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import type { Product } from "@/types";
 import { readProducts, saveProducts } from "@/lib/productStorage";
+import { requireAdmin } from "@/lib/requireAdmin";
+
+export const dynamic = "force-dynamic";
 
 // GET /api/products
 export async function GET() {
@@ -9,6 +12,8 @@ export async function GET() {
 
 // POST /api/products  — create
 export async function POST(req: NextRequest) {
+  const unauth = requireAdmin(req);
+  if (unauth) return unauth;
   const body = await req.json() as Product;
   const list = await readProducts();
 
