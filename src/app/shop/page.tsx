@@ -3,7 +3,8 @@
 import { useState, useMemo, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import ProductCard from "@/components/ProductCard";
-import type { Category, Product } from "@/types";
+import type { Category } from "@/types";
+import { useLiveProducts } from "@/hooks/useLiveProducts";
 import clsx from "clsx";
 
 const CATEGORIES: { value: Category; label: string }[] = [
@@ -26,22 +27,7 @@ function CategorySync({ onCategory }: { onCategory: (c: Category) => void }) {
 export default function ShopPage() {
   const [activeCategory, setActiveCategory] = useState<Category>("all");
   const [sortBy, setSortBy] = useState<"default" | "price-asc" | "price-desc">("default");
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      try {
-        const res = await fetch("/api/products", { cache: "no-store" });
-        const data = (await res.json()) as Product[];
-        if (!cancelled) setProducts(Array.isArray(data) ? data : []);
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    })();
-    return () => { cancelled = true; };
-  }, []);
+  const { products, loading } = useLiveProducts();
 
   const filtered = useMemo(() => {
     let list =

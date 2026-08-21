@@ -1125,16 +1125,32 @@ export default function App() {
 
   useEffect(() => {
     let cancelled = false;
-    (async () => {
+    let inFlight = false;
+
+    async function load() {
+      if (inFlight) return;
+      inFlight = true;
       try {
         const res = await fetch("/api/products", { cache: "no-store" });
         const data = await res.json();
         if (cancelled || !Array.isArray(data)) return;
         PRODUCTS = data.map(mapProduct);
         forceRerender((n) => n + 1);
-      } catch {}
-    })();
-    return () => { cancelled = true; };
+      } catch {} finally { inFlight = false; }
+    }
+
+    load();
+
+    const onFocus = () => load();
+    const onVisibility = () => { if (document.visibilityState === "visible") load(); };
+    window.addEventListener("focus", onFocus);
+    document.addEventListener("visibilitychange", onVisibility);
+
+    return () => {
+      cancelled = true;
+      window.removeEventListener("focus", onFocus);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
   }, []);
 
   const addToCart = (productId: string) => {
