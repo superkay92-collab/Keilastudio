@@ -95,6 +95,32 @@ export async function POST(req: NextRequest) {
     </div>
   `;
 
+  // Plain-text alternatives (Gmail/Outlook heavily penalise HTML-only mail)
+  const customerEmailText = [
+    `Hi ${resolvedName},`,
+    ``,
+    `Thanks for your order! We'll review your payment and get it ready shortly.`,
+    ``,
+    `Order ID: ${id}`,
+    `Total: GHS ${total}`,
+    `Payment: ${paymentMethod ?? "-"}`,
+    `Delivery to: ${resolvedAddress}`,
+    ``,
+    `— Keila's Studio Extension, East Legon, Accra, Ghana`,
+    `Reply to this email if you have any questions.`,
+  ].join("\n");
+
+  const adminEmailText = [
+    `New order received: ${id}`,
+    ``,
+    `Customer: ${resolvedName}`,
+    `Email: ${resolvedEmail ?? "-"}`,
+    `Phone: ${phone ?? "-"}`,
+    `Total: GHS ${total}`,
+    `Payment: ${paymentMethod ?? "-"}`,
+    `Delivery to: ${resolvedAddress}`,
+  ].join("\n");
+
   // ── Email via Resend ────────────────────────────────────────────────────
   const resendKey = process.env.RESEND_API_KEY;
   if (resendKey) {
@@ -102,16 +128,29 @@ export async function POST(req: NextRequest) {
       const { Resend } = await import("resend");
       const resend = new Resend(resendKey);
 
-      const jobs: Array<{ label: string; to: string; subject: string; html: string }> = [
-        { label: "admin", to: STAFF_EMAIL, subject: `New Order: ${id} — GHS ${total}`, html: adminEmailHtml },
+      const replyTo = process.env.RESEND_REPLY_TO ?? STAFF_EMAIL;
+
+      const jobs: Array<{ label: string; to: string; subject: string; html: string; text: string }> = [
+        { label: "admin", to: STAFF_EMAIL, subject: `New Order: ${id} — GHS ${total}`, html: adminEmailHtml, text: adminEmailText },
       ];
       if (resolvedEmail) {
-        jobs.push({ label: "customer", to: resolvedEmail, subject: `Your order is confirmed [${id}]`, html: customerEmailHtml });
+        jobs.push({ label: "customer", to: resolvedEmail, subject: `Your order is confirmed [${id}]`, html: customerEmailHtml, text: customerEmailText });
       }
 
       const settled = await Promise.allSettled(
         jobs.map((j) =>
-          resend.emails.send({ from: `Keila's Studio <${from}>`, to: j.to, subject: j.subject, html: j.html })
+          resend.emails.send({
+            from: `Keila's Studio <${from}>`,
+            to: j.to,
+            replyTo,
+            subject: j.subject,
+            html: j.html,
+            text: j.text,
+            headers: {
+              "List-Unsubscribe": `<mailto:${replyTo}?subject=unsubscribe>`,
+              "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
+            },
+          })
         )
       );
 
