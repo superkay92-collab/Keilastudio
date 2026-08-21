@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getAdminEmail } from "@/lib/adminAuth";
 
-const STAFF_EMAIL = "thekeilasstudio17@gmail.com";
 const STAFF_PHONE = "+233530515474";
 
 export async function POST(req: NextRequest) {
+  const STAFF_EMAIL = getAdminEmail();
   let order: Record<string, unknown>;
   try {
     order = await req.json();
@@ -101,31 +102,33 @@ export async function POST(req: NextRequest) {
       const { Resend } = await import("resend");
       const resend = new Resend(resendKey);
 
-      const sends = [
-        // Staff always gets notified
-        resend.emails.send({
-          from: `Keila's Studio <${from}>`,
-          to: STAFF_EMAIL,
-          subject: `New Order: ${id} — GHS ${total}`,
-          html: adminEmailHtml,
-        }),
+      const jobs: Array<{ label: string; to: string; subject: string; html: string }> = [
+        { label: "admin", to: STAFF_EMAIL, subject: `New Order: ${id} — GHS ${total}`, html: adminEmailHtml },
       ];
-
-      // Client email only if they provided one
       if (resolvedEmail) {
-        sends.push(
-          resend.emails.send({
-            from: `Keila's Studio <${from}>`,
-            to: resolvedEmail,
-            subject: `Your order is confirmed [${id}]`,
-            html: customerEmailHtml,
-          })
-        );
+        jobs.push({ label: "customer", to: resolvedEmail, subject: `Your order is confirmed [${id}]`, html: customerEmailHtml });
       }
 
-      await Promise.allSettled(sends);
-      results.email = true;
+      const settled = await Promise.allSettled(
+        jobs.map((j) =>
+          resend.emails.send({ from: `Keila's Studio <${from}>`, to: j.to, subject: j.subject, html: j.html })
+        )
+      );
+
+      const emailResults: Record<string, string> = {};
+      settled.forEach((r, i) => {
+        const j = jobs[i];
+        if (r.status === "fulfilled") {
+          const v = r.value as { data: { id: string } | null; error: { message: string } | null };
+          emailResults[j.label] = v.error ? `error: ${v.error.message}` : `sent id=${v.data?.id ?? "?"}`;
+        } else {
+          emailResults[j.label] = `rejected: ${String(r.reason)}`;
+        }
+      });
+      console.log("[notify-order] email results:", emailResults);
+      results.email = JSON.stringify(emailResults);
     } catch (err) {
+      console.error("[notify-order] resend threw:", err);
       results.email = String(err);
     }
   } else {
