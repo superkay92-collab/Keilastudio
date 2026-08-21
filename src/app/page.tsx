@@ -254,10 +254,6 @@ function HomePage({ setPage, addToCart, notify, onOpen, onZoom }: { setPage: (p:
         </div>
         <div className="rounded-2xl overflow-hidden" style={{ aspectRatio: "1/1", position: "relative", display: "flex", flexDirection: "column", justifyContent: "flex-end", padding: 32 }}>
           <img src="/hero.jpeg" alt="Keila's Studio Extensions" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
-          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(28,32,20,0.72) 0%, rgba(28,32,20,0.18) 55%, transparent 100%)" }} />
-          <span className="f-mono" style={{ position: "relative", color: C.oliveSoft, fontSize: 9, letterSpacing: 3 }}>KEILAS STUDIO EXTENSION</span>
-          <div className="f-display" style={{ position: "relative", color: C.cream, fontSize: 36, lineHeight: 1.07, marginTop: 10 }}>Premium<br />Human Hair</div>
-          <div className="f-mono" style={{ position: "relative", color: C.blush, fontSize: 10.5, marginTop: 16, letterSpacing: 1.2 }}>Ethically sourced · Hand-checked</div>
         </div>
       </div>
 
