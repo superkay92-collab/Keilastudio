@@ -34,8 +34,20 @@ export default function ProductCard({ product }: { product: Product }) {
   const [imgError, setImgError] = useState(false);
   const src = product.images?.[0];
 
+  const tiers = product.lengths ?? [];
+  const hasTiers = tiers.length > 0;
+  const startingPrice = hasTiers
+    ? Math.min(...tiers.map((t) => t.price))
+    : product.price;
+
   function handleAddToCart(e: React.MouseEvent) {
     e.preventDefault();
+    // If the product has length-priced tiers, force the customer to pick one
+    // on the detail page instead of silently adding the default length.
+    if (hasTiers) {
+      window.location.href = `/products/${product.id}`;
+      return;
+    }
     addItem(product, 1, product.specs.length);
     toast.success(`${product.name} added to bag`);
   }
@@ -61,7 +73,7 @@ export default function ProductCard({ product }: { product: Product }) {
           className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-cream text-charcoal text-xs font-medium tracking-wide px-5 py-2.5 flex items-center gap-2 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 whitespace-nowrap shadow-sm"
         >
           <ShoppingBag size={13} />
-          Add to Bag
+          {hasTiers ? "Choose Length" : "Add to Bag"}
         </button>
       </div>
 
@@ -79,7 +91,10 @@ export default function ProductCard({ product }: { product: Product }) {
           {product.specs.length} &middot; {product.specs.texture}
         </p>
         <p className="text-sm font-semibold text-charcoal mt-2">
-          {formatPrice(product.price, currency)}
+          {hasTiers && (
+            <span className="text-[10px] font-normal text-muted mr-1 uppercase tracking-wider">From</span>
+          )}
+          {formatPrice(startingPrice, currency)}
         </p>
       </div>
     </Link>
