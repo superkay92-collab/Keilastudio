@@ -1,8 +1,14 @@
+export interface LengthOption {
+  inches: number;
+  fallsAt?: string;
+  price: number; // GHS
+}
+
 export interface Product {
   id: string;
   name: string;
   category: "wigs" | "bundles" | "extensions" | "closures-frontals" | "nails" | "hair-care";
-  price: number; // in GHS
+  price: number; // in GHS — base/fallback price, also used when `lengths` is absent
   images: string[];
   description: string;
   specs: {
@@ -10,6 +16,7 @@ export interface Product {
     texture: string;
   };
   availableLengths: string[];
+  lengths?: LengthOption[]; // when set, product detail uses per-length pricing
   inStock: boolean;
   featured?: boolean;
 }
@@ -18,6 +25,7 @@ export interface CartItem {
   product: Product;
   quantity: number;
   selectedLength: string;
+  unitPrice?: number; // resolved from LengthOption at add-to-cart time
 }
 
 export interface ShippingAddress {

@@ -7,7 +7,7 @@ import {
   ImageOff, ToggleLeft, ToggleRight, Star, Package, Upload, EyeOff,
 } from "lucide-react";
 import toast from "react-hot-toast";
-import type { Product } from "@/types";
+import type { Product, LengthOption } from "@/types";
 import { isPublishedProduct } from "@/lib/publishedProduct";
 import clsx from "clsx";
 
@@ -77,8 +77,19 @@ function ProductModal({
   const [form, setForm] = useState(initial);
   const [imagesText, setImagesText] = useState(initial.images?.join("\n") ?? "");
   const [lengthsText, setLengthsText] = useState(initial.availableLengths?.join(", ") ?? "");
+  const [tiers, setTiers] = useState<LengthOption[]>(initial.lengths ?? []);
   const [uploading, setUploading] = useState(false);
   const set = (k: keyof typeof form, v: unknown) => setForm((prev) => ({ ...prev, [k]: v }));
+
+  function updateTier(idx: number, patch: Partial<LengthOption>) {
+    setTiers((prev) => prev.map((t, i) => (i === idx ? { ...t, ...patch } : t)));
+  }
+  function addTier() {
+    setTiers((prev) => [...prev, { inches: 0, fallsAt: "", price: 0 }]);
+  }
+  function removeTier(idx: number) {
+    setTiers((prev) => prev.filter((_, i) => i !== idx));
+  }
 
   async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -101,10 +112,14 @@ function ProductModal({
     e.preventDefault();
     if (!form.name.trim()) { toast.error("Product name is required"); return; }
     if (form.price < 0) { toast.error("Price must be 0 or more"); return; }
+    const cleanTiers = tiers
+      .filter((t) => Number.isFinite(t.inches) && t.inches > 0 && Number.isFinite(t.price) && t.price > 0)
+      .sort((a, b) => a.inches - b.inches);
     onSave({
       ...form,
       images: imagesText.split("\n").map((s) => s.trim()).filter(Boolean),
       availableLengths: lengthsText.split(",").map((s) => s.trim()).filter(Boolean),
+      lengths: cleanTiers.length > 0 ? cleanTiers : undefined,
     });
   }
 
@@ -197,6 +212,72 @@ function ProductModal({
             <input value={lengthsText} onChange={(e) => setLengthsText(e.target.value)}
               className="w-full border border-cream-dark bg-white px-3 py-2 text-sm focus:outline-none focus:border-charcoal"
               placeholder='12", 14", 16", 18", 20"' />
+          </div>
+
+          <div className="border border-cream-dark bg-white/50 p-3">
+            <div className="flex items-center justify-between mb-2">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-muted">
+                Length tiers with per-length pricing (optional)
+              </label>
+              <button
+                type="button"
+                onClick={addTier}
+                className="flex items-center gap-1 text-xs border border-cream-dark px-2 py-1 hover:border-charcoal"
+              >
+                <Plus size={11} /> Add tier
+              </button>
+            </div>
+            {tiers.length === 0 ? (
+              <p className="text-[11px] text-muted">
+                Leave empty to use the single price above. Add rows here for wigs/extensions with
+                different prices per length. If present, this replaces the flat price on the product page.
+              </p>
+            ) : (
+              <div className="space-y-1.5">
+                <div className="grid grid-cols-[70px_1fr_90px_28px] gap-2 text-[10px] uppercase tracking-wider text-muted">
+                  <span>Inches</span>
+                  <span>Falls at (optional)</span>
+                  <span>Price GH₵</span>
+                  <span></span>
+                </div>
+                {tiers.map((t, i) => (
+                  <div key={i} className="grid grid-cols-[70px_1fr_90px_28px] gap-2">
+                    <input
+                      type="number"
+                      min={0}
+                      step={1}
+                      value={t.inches || ""}
+                      onChange={(e) => updateTier(i, { inches: Number(e.target.value) })}
+                      className="border border-cream-dark bg-white px-2 py-1.5 text-sm focus:outline-none focus:border-charcoal"
+                      placeholder="18"
+                    />
+                    <input
+                      value={t.fallsAt ?? ""}
+                      onChange={(e) => updateTier(i, { fallsAt: e.target.value })}
+                      className="border border-cream-dark bg-white px-2 py-1.5 text-sm focus:outline-none focus:border-charcoal"
+                      placeholder="Mid-back"
+                    />
+                    <input
+                      type="number"
+                      min={0}
+                      step={1}
+                      value={t.price || ""}
+                      onChange={(e) => updateTier(i, { price: Number(e.target.value) })}
+                      className="border border-cream-dark bg-white px-2 py-1.5 text-sm focus:outline-none focus:border-charcoal"
+                      placeholder="1450"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeTier(i)}
+                      className="text-muted hover:text-red-600"
+                      title="Remove"
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="flex gap-6">

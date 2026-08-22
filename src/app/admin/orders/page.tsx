@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { Order } from "@/types";
+import { cartLineTotal } from "@/lib/cart";
 import toast from "react-hot-toast";
 
 const STATUS_OPTIONS: Order["status"][] = [
@@ -120,7 +121,7 @@ export default function AdminOrdersPage() {
                       </span>
                       <span className="font-medium">
                         GH₵{" "}
-                        {(item.product.price * item.quantity).toLocaleString()}
+                        {(cartLineTotal(item)).toLocaleString()}
                       </span>
                     </li>
                   ))}

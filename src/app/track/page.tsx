@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { Search, Package, Truck, CheckCircle, Clock } from "lucide-react";
 import { getStatusStep } from "@/lib/orderUtils";
 import type { Order } from "@/types";
+import { cartLineTotal } from "@/lib/cart";
 
 const STEPS = [
   { icon: Clock, label: "Order Received", key: "pending" },
@@ -127,7 +128,7 @@ function OrderCard({ order }: { order: Order }) {
               </span>
               <span className="font-medium">
                 GH₵{" "}
-                {(item.product.price * item.quantity).toLocaleString()}
+                {(cartLineTotal(item)).toLocaleString()}
               </span>
             </li>
           ))}

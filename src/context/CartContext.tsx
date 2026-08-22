@@ -9,12 +9,13 @@ import {
   type ReactNode,
 } from "react";
 import type { CartItem, Product } from "@/types";
+import { cartUnitPrice } from "@/lib/cart";
 
 interface CartContextType {
   items: CartItem[];
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
-  addItem: (product: Product, quantity?: number, selectedLength?: string) => void;
+  addItem: (product: Product, quantity?: number, selectedLength?: string, unitPrice?: number) => void;
   removeItem: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
@@ -53,8 +54,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, [items]);
 
   const addItem = useCallback(
-    (product: Product, quantity = 1, selectedLength?: string) => {
+    (product: Product, quantity = 1, selectedLength?: string, unitPrice?: number) => {
       const len = selectedLength ?? product.specs.length;
+      const resolvedPrice =
+        typeof unitPrice === "number"
+          ? unitPrice
+          : product.lengths?.find((l) => `${l.inches}\"` === len || String(l.inches) === len)?.price;
       setItems((prev) => {
         const existing = prev.find(
           (i) => i.product.id === product.id && i.selectedLength === len
@@ -66,7 +71,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
               : i
           );
         }
-        return [...prev, { product, quantity, selectedLength: len }];
+        return [...prev, { product, quantity, selectedLength: len, unitPrice: resolvedPrice }];
       });
       setIsOpen(true);
     },
@@ -96,7 +101,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const totalItems = items.reduce((sum, i) => sum + i.quantity, 0);
   const subtotal = items.reduce(
-    (sum, i) => sum + i.product.price * i.quantity,
+    (sum, i) => sum + cartUnitPrice(i) * i.quantity,
     0
   );
 

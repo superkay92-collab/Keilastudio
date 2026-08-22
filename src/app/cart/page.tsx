@@ -6,6 +6,7 @@ import { Minus, Plus, Trash2, ShoppingBag, ArrowRight } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useCurrency } from "@/context/CurrencyContext";
 import { formatPrice } from "@/lib/currency";
+import { cartUnitPrice, cartLineTotal } from "@/lib/cart";
 
 export default function CartPage() {
   const { items, removeItem, updateQuantity, subtotal } = useCart();
@@ -67,7 +68,7 @@ export default function CartPage() {
                     {item.selectedLength} &middot; {item.product.specs.texture}
                   </p>
                   <p className="text-sm font-semibold mt-2">
-                    {formatPrice(item.product.price, currency)}
+                    {formatPrice(cartUnitPrice(item), currency)}
                   </p>
                   <div className="flex items-center gap-4 mt-4">
                     <div className="flex items-center border border-cream-dark">
@@ -100,7 +101,7 @@ export default function CartPage() {
                 </div>
                 <div className="text-right flex-shrink-0">
                   <p className="font-semibold text-sm">
-                    {formatPrice(item.product.price * item.quantity, currency)}
+                    {formatPrice(cartLineTotal(item), currency)}
                   </p>
                 </div>
               </div>

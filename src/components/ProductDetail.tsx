@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, ShoppingBag, Check } from "lucide-react";
-import type { Product } from "@/types";
+import type { Product, LengthOption } from "@/types";
 import { useCart } from "@/context/CartContext";
 import { useCurrency } from "@/context/CurrencyContext";
 import { formatPrice } from "@/lib/currency";
@@ -14,15 +14,32 @@ import toast from "react-hot-toast";
 export default function ProductDetail({ product, related = [] }: { product: Product; related?: Product[] }) {
   const { addItem } = useCart();
   const { currency } = useCurrency();
-  const [selectedLength, setSelectedLength] = useState(product.specs.length);
+
+  const tiers: LengthOption[] = product.lengths ?? [];
+  const hasTiers = tiers.length > 0;
+  const defaultTier = hasTiers
+    ? tiers[Math.floor(tiers.length / 2)]
+    : undefined;
+
+  const [selectedTier, setSelectedTier] = useState<LengthOption | undefined>(defaultTier);
+  const [selectedLength, setSelectedLength] = useState(
+    hasTiers ? `${defaultTier!.inches}"` : product.specs.length
+  );
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
 
+  const displayPrice = selectedTier?.price ?? product.price;
+
   function handleAddToCart() {
-    addItem(product, quantity, selectedLength);
+    addItem(product, quantity, selectedLength, selectedTier?.price);
     toast.success("Added to bag!");
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
+  }
+
+  function pickTier(t: LengthOption) {
+    setSelectedTier(t);
+    setSelectedLength(`${t.inches}"`);
   }
 
   return (
@@ -59,7 +76,12 @@ export default function ProductDetail({ product, related = [] }: { product: Prod
               {product.specs.length} &middot; {product.specs.texture}
             </p>
             <p className="text-2xl font-semibold mt-4 text-charcoal">
-              {formatPrice(product.price, currency)}
+              {formatPrice(displayPrice, currency)}
+              {hasTiers && selectedTier?.fallsAt && (
+                <span className="ml-2 text-sm font-normal text-muted">
+                  · Falls at {selectedTier.fallsAt}
+                </span>
+              )}
             </p>
 
             <div className="h-px bg-cream-dark my-6" />
@@ -70,21 +92,51 @@ export default function ProductDetail({ product, related = [] }: { product: Prod
                 {product.category === "nails" ? "Size" : "Length"}:{" "}
                 <span className="text-muted font-normal">{selectedLength}</span>
               </p>
-              <div className="flex flex-wrap gap-2">
-                {product.availableLengths.map((len) => (
-                  <button
-                    key={len}
-                    onClick={() => setSelectedLength(len)}
-                    className={`px-3 py-2 text-xs border transition-colors ${
-                      selectedLength === len
-                        ? "bg-charcoal text-cream border-charcoal"
-                        : "border-cream-dark text-charcoal hover:border-charcoal"
-                    }`}
-                  >
-                    {len}
-                  </button>
-                ))}
-              </div>
+              {hasTiers ? (
+                <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                  {tiers.map((t) => {
+                    const active = selectedTier?.inches === t.inches;
+                    return (
+                      <button
+                        key={t.inches}
+                        onClick={() => pickTier(t)}
+                        className={`relative rounded-md border p-2.5 text-center transition-colors ${
+                          active
+                            ? "border-charcoal border-2 bg-cream-dark/40"
+                            : "border-cream-dark hover:border-charcoal"
+                        }`}
+                      >
+                        {active && (
+                          <span className="absolute top-1 right-1.5 text-[10px] font-bold text-charcoal">✓</span>
+                        )}
+                        <span className="block text-base font-bold leading-tight">{t.inches}&quot;</span>
+                        <span className="block text-[10.5px] text-muted mt-0.5">
+                          {formatPrice(t.price, currency)}
+                        </span>
+                        {t.fallsAt && (
+                          <span className="block text-[9.5px] text-muted mt-0.5 truncate">{t.fallsAt}</span>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="flex flex-wrap gap-2">
+                  {product.availableLengths.map((len) => (
+                    <button
+                      key={len}
+                      onClick={() => setSelectedLength(len)}
+                      className={`px-3 py-2 text-xs border transition-colors ${
+                        selectedLength === len
+                          ? "bg-charcoal text-cream border-charcoal"
+                          : "border-cream-dark text-charcoal hover:border-charcoal"
+                      }`}
+                    >
+                      {len}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Quantity */}
@@ -121,7 +173,7 @@ export default function ProductDetail({ product, related = [] }: { product: Prod
             </button>
             <Link
               href="/checkout"
-              onClick={() => addItem(product, quantity, selectedLength)}
+              onClick={() => addItem(product, quantity, selectedLength, selectedTier?.price)}
               className="mt-3 flex items-center justify-center py-4 text-sm font-medium border border-charcoal hover:bg-cream-dark transition-colors"
             >
               Buy Now

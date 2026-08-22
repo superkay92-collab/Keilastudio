@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import { useCurrency } from "@/context/CurrencyContext";
 import { formatPrice } from "@/lib/currency";
+import { cartUnitPrice } from "@/lib/cart";
 
 export default function CartSidebar() {
   const { items, isOpen, setIsOpen, removeItem, updateQuantity, totalItems, subtotal } =
@@ -75,7 +76,7 @@ export default function CartSidebar() {
                       {item.selectedLength} &middot; {item.product.specs.texture}
                     </p>
                     <p className="text-sm font-semibold mt-1.5">
-                      {formatPrice(item.product.price, currency)}
+                      {formatPrice(cartUnitPrice(item), currency)}
                     </p>
 
                     <div className="flex items-center gap-3 mt-3">

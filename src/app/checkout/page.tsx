@@ -9,6 +9,7 @@ import { ArrowLeft, CreditCard, Smartphone } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useCurrency } from "@/context/CurrencyContext";
 import { formatPrice } from "@/lib/currency";
+import { cartLineTotal } from "@/lib/cart";
 import { generateOrderId } from "@/lib/orderUtils";
 import type { Order } from "@/types";
 import toast from "react-hot-toast";
@@ -471,7 +472,7 @@ export default function CheckoutPage() {
                         </p>
                         <p className="font-semibold mt-1">
                           {formatPrice(
-                            item.product.price * item.quantity,
+                            cartLineTotal(item),
                             currency
                           )}
                         </p>
