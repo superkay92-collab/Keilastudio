@@ -316,7 +316,10 @@ export default function AdminProductsCMS() {
   const fetchProducts = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/products", { cache: "no-store" });
+      const res = await fetch(`/api/products?_=${Date.now()}`, {
+        cache: "no-store",
+        headers: { "Cache-Control": "no-cache", Pragma: "no-cache" },
+      });
       setProducts(await res.json());
     } catch { toast.error("Failed to load products"); }
     finally { setLoading(false); }
