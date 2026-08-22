@@ -4,10 +4,11 @@ import { useEffect, useState, useCallback } from "react";
 import Image from "next/image";
 import {
   Plus, Pencil, Trash2, X, Check, Search,
-  ImageOff, ToggleLeft, ToggleRight, Star, Package, Upload,
+  ImageOff, ToggleLeft, ToggleRight, Star, Package, Upload, EyeOff,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import type { Product } from "@/types";
+import { isPublishedProduct } from "@/lib/publishedProduct";
 import clsx from "clsx";
 
 const CATEGORIES = [
@@ -291,7 +292,12 @@ export default function AdminProductsCMS() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
           <h1 className="text-2xl font-bold">Products</h1>
-          <p className="text-xs text-muted mt-0.5">{products.length} total · Changes auto-publish to the shop</p>
+          <p className="text-xs text-muted mt-0.5">
+            {products.length} total · {products.filter(isPublishedProduct).length} live on shop
+            {products.length - products.filter(isPublishedProduct).length > 0
+              ? ` · ${products.length - products.filter(isPublishedProduct).length} draft (hidden)`
+              : ""}
+          </p>
         </div>
         <button onClick={() => setModal({ open: true, product: { ...EMPTY_FORM } })}
           className="flex items-center gap-2 bg-charcoal text-cream px-5 py-2.5 text-sm font-medium hover:bg-charcoal/90 transition-colors">
@@ -337,6 +343,11 @@ export default function AdminProductsCMS() {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
                   <p className="font-medium text-sm truncate">{product.name}</p>
+                  {!isPublishedProduct(product) && (
+                    <span className="flex items-center gap-0.5 text-[10px] px-1.5 py-0.5 bg-slate-200 text-slate-700 rounded font-medium" title="Hidden from shop until it has a real name and price > 0">
+                      <EyeOff size={9} /> Draft
+                    </span>
+                  )}
                   {product.featured && (
                     <span className="flex items-center gap-0.5 text-[10px] px-1.5 py-0.5 bg-amber-100 text-amber-700 rounded font-medium">
                       <Star size={9} fill="currentColor" /> Featured

@@ -17,7 +17,7 @@ export function useLiveProducts() {
       if (inFlight.current) return;
       inFlight.current = true;
       try {
-        const res = await fetch("/api/products", { cache: "no-store" });
+        const res = await fetch("/api/products?published=1", { cache: "no-store" });
         const data = await res.json();
         if (!cancelled && Array.isArray(data)) setProducts(data as Product[]);
       } catch {

@@ -2,12 +2,16 @@ import { NextRequest, NextResponse } from "next/server";
 import type { Product } from "@/types";
 import { readProducts, saveProducts } from "@/lib/productStorage";
 import { requireAdmin } from "@/lib/requireAdmin";
+import { isPublishedProduct } from "@/lib/publishedProduct";
 
 export const dynamic = "force-dynamic";
 
-// GET /api/products
-export async function GET() {
-  return NextResponse.json(await readProducts());
+// GET /api/products         → admin (all)
+// GET /api/products?published=1 → shop-facing (published only)
+export async function GET(req: NextRequest) {
+  const list = await readProducts();
+  const publishedOnly = req.nextUrl.searchParams.get("published") === "1";
+  return NextResponse.json(publishedOnly ? list.filter(isPublishedProduct) : list);
 }
 
 // POST /api/products  — create
