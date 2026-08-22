@@ -75,67 +75,88 @@ export default function ProductDetail({ product, related = [] }: { product: Prod
             <p className="text-xs text-muted mt-1">
               {product.specs.length} &middot; {product.specs.texture}
             </p>
-            <p className="text-2xl font-semibold mt-4 text-charcoal">
-              {formatPrice(displayPrice, currency)}
-              {hasTiers && selectedTier?.fallsAt && (
-                <span className="ml-2 text-sm font-normal text-muted">
-                  · Falls at {selectedTier.fallsAt}
-                </span>
-              )}
-            </p>
+            {!hasTiers && (
+              <p className="text-2xl font-semibold mt-4 text-charcoal">
+                {formatPrice(displayPrice, currency)}
+              </p>
+            )}
 
             <div className="h-px bg-cream-dark my-6" />
 
             {/* Length / Size */}
             <div className="mb-6">
-              <p className="text-sm font-medium mb-3">
-                {product.category === "nails" ? "Size" : "Length"}:{" "}
-                <span className="text-muted font-normal">{selectedLength}</span>
-              </p>
               {hasTiers ? (
-                <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
-                  {tiers.map((t) => {
-                    const active = selectedTier?.inches === t.inches;
-                    return (
+                <>
+                  <div className="flex items-baseline justify-between mb-3">
+                    <p className="text-sm font-semibold">
+                      Choose your {product.category === "nails" ? "size" : "length"}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        toast("Measure from the crown of your head to where you'd like the hair to fall, or compare against a photo of your current length for the closest match.", { duration: 6000 })
+                      }
+                      className="text-xs text-muted underline hover:text-charcoal transition-colors"
+                    >
+                      Size guide
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-4 gap-2">
+                    {tiers.map((t) => {
+                      const active = selectedTier?.inches === t.inches;
+                      return (
+                        <button
+                          key={t.inches}
+                          onClick={() => pickTier(t)}
+                          className={`relative rounded-md border p-2.5 text-center transition-colors ${
+                            active
+                              ? "border-charcoal border-2 bg-cream-dark/40"
+                              : "border-cream-dark hover:border-charcoal"
+                          }`}
+                        >
+                          {active && (
+                            <span className="absolute top-1 right-1.5 text-[10px] font-bold text-charcoal">✓</span>
+                          )}
+                          <span className="block text-base font-bold leading-tight">{t.inches}&quot;</span>
+                          <span className="block text-[10.5px] text-muted mt-0.5">
+                            {formatPrice(t.price, currency)}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <div className="flex items-baseline justify-between mt-4 text-sm">
+                    <span className="text-muted">
+                      Selected: {selectedTier?.inches}&quot;
+                      {selectedTier?.fallsAt ? ` — ${selectedTier.fallsAt}` : ""}
+                    </span>
+                    <strong className="text-lg text-charcoal">
+                      {formatPrice(displayPrice, currency)}
+                    </strong>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <p className="text-sm font-medium mb-3">
+                    {product.category === "nails" ? "Size" : "Length"}:{" "}
+                    <span className="text-muted font-normal">{selectedLength}</span>
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {product.availableLengths.map((len) => (
                       <button
-                        key={t.inches}
-                        onClick={() => pickTier(t)}
-                        className={`relative rounded-md border p-2.5 text-center transition-colors ${
-                          active
-                            ? "border-charcoal border-2 bg-cream-dark/40"
-                            : "border-cream-dark hover:border-charcoal"
+                        key={len}
+                        onClick={() => setSelectedLength(len)}
+                        className={`px-3 py-2 text-xs border transition-colors ${
+                          selectedLength === len
+                            ? "bg-charcoal text-cream border-charcoal"
+                            : "border-cream-dark text-charcoal hover:border-charcoal"
                         }`}
                       >
-                        {active && (
-                          <span className="absolute top-1 right-1.5 text-[10px] font-bold text-charcoal">✓</span>
-                        )}
-                        <span className="block text-base font-bold leading-tight">{t.inches}&quot;</span>
-                        <span className="block text-[10.5px] text-muted mt-0.5">
-                          {formatPrice(t.price, currency)}
-                        </span>
-                        {t.fallsAt && (
-                          <span className="block text-[9.5px] text-muted mt-0.5 truncate">{t.fallsAt}</span>
-                        )}
+                        {len}
                       </button>
-                    );
-                  })}
-                </div>
-              ) : (
-                <div className="flex flex-wrap gap-2">
-                  {product.availableLengths.map((len) => (
-                    <button
-                      key={len}
-                      onClick={() => setSelectedLength(len)}
-                      className={`px-3 py-2 text-xs border transition-colors ${
-                        selectedLength === len
-                          ? "bg-charcoal text-cream border-charcoal"
-                          : "border-cream-dark text-charcoal hover:border-charcoal"
-                      }`}
-                    >
-                      {len}
-                    </button>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                </>
               )}
             </div>
 
