@@ -65,6 +65,16 @@ export async function POST(req: NextRequest) {
     if (!verifyPassword(String(body.password ?? ""))) {
       return NextResponse.json({ ok: false, error: "Incorrect password" }, { status: 401 });
     }
+    // Skip OTP in dev, or in prod when ADMIN_SKIP_OTP=true (password-only login).
+    const skipOtp =
+      process.env.NODE_ENV !== "production" ||
+      process.env.ADMIN_SKIP_OTP === "true";
+    if (skipOtp) {
+      const sessionToken = createSessionToken();
+      const res = NextResponse.json({ ok: true, authed: true });
+      res.cookies.set(SESSION_COOKIE, sessionToken, cookieOpts);
+      return res;
+    }
     const otp = String(Math.floor(100000 + Math.random() * 900000));
     const otpToken = createOTPToken(otp);
     const email = getAdminEmail();

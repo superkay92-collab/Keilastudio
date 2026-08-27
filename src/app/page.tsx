@@ -212,7 +212,7 @@ function SiteFooter({ setPage }: { setPage: (p: string) => void }) {
         </div>
         <div className="f-body" style={{ color: C.blushPale, fontSize: 13.5 }}>
           <button onClick={() => setPage("track")} className="block mb-2 opacity-90">Track an order →</button>
-          <button onClick={() => setPage("admin")} className="block opacity-60 text-xs">Staff login</button>
+          <a href="/admin" className="block opacity-60 text-xs">Staff login</a>
         </div>
       </div>
       <div style={{ borderTop: `1px solid ${C.olive}` }} className="text-center py-4">

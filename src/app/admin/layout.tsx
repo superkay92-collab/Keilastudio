@@ -61,9 +61,10 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
     e.preventDefault();
     const data = await call({ action: "login", password });
     if (data.ok) {
+      setPassword("");
+      if (data.authed) { setState("authed"); return; }
       setOtpToken(data.otpToken);
       setMaskedEmail(data.maskedEmail);
-      setPassword("");
       setState("otp");
     } else setError(data.error ?? "Incorrect password");
   }
