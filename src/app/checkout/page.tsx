@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Script from "next/script";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft, CreditCard, Smartphone } from "lucide-react";
+import { ArrowLeft, Smartphone } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useCurrency } from "@/context/CurrencyContext";
 import { formatPrice } from "@/lib/currency";
@@ -50,6 +50,7 @@ export default function CheckoutPage() {
   const { currency } = useCurrency();
   const [payMethod, setPayMethod] = useState<PayMethod>("momo");
   const [loading, setLoading] = useState(false);
+  const [momoConfirmed, setMomoConfirmed] = useState(false);
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -151,12 +152,10 @@ export default function CheckoutPage() {
       toast.error("Please enter the MoMo number you sent from");
       return;
     }
-    if (!confirm(
-      `Please confirm you have sent ${formatPrice(total, currency)} to:\n\n` +
-      `Number: ${process.env.NEXT_PUBLIC_MOMO_NUMBER}\n` +
-      `Name: ${process.env.NEXT_PUBLIC_MOMO_NAME}\n\n` +
-      `Click OK once the transfer is complete.`
-    )) return;
+    if (!momoConfirmed) {
+      toast.error("Please tick the box to confirm you've sent the payment");
+      return;
+    }
     setLoading(true);
     const ref = `KSE-MM-${Date.now()}`;
     const order = buildOrder(ref, "momo");
@@ -374,7 +373,7 @@ export default function CheckoutPage() {
                 <h2 className="text-base font-semibold mb-5">
                   Payment Method
                 </h2>
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 gap-3">
                   <button
                     type="button"
                     onClick={() => setPayMethod("momo")}
@@ -385,39 +384,9 @@ export default function CheckoutPage() {
                     }`}
                   >
                     <Smartphone size={22} />
-                    <span className="text-sm font-semibold">MoMo</span>
+                    <span className="text-sm font-semibold">Mobile Money</span>
                     <span className="text-[11px] text-muted text-center">
-                      MTN · Vodafone · AirtelTigo
-                    </span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setPayMethod("paystack")}
-                    className={`flex flex-col items-center gap-2 p-4 border-2 transition-colors ${
-                      payMethod === "paystack"
-                        ? "border-charcoal bg-cream-dark"
-                        : "border-cream-dark hover:border-charcoal/40"
-                    }`}
-                  >
-                    <CreditCard size={22} />
-                    <span className="text-sm font-semibold">Paystack</span>
-                    <span className="text-[11px] text-muted text-center">
-                      Card · Bank · USSD
-                    </span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setPayMethod("flutterwave")}
-                    className={`flex flex-col items-center gap-2 p-4 border-2 transition-colors ${
-                      payMethod === "flutterwave"
-                        ? "border-charcoal bg-cream-dark"
-                        : "border-cream-dark hover:border-charcoal/40"
-                    }`}
-                  >
-                    <CreditCard size={22} />
-                    <span className="text-sm font-semibold">Flutterwave</span>
-                    <span className="text-[11px] text-muted text-center">
-                      Card · Bank
+                      MTN · Telecel · AirtelTigo
                     </span>
                   </button>
                 </div>
@@ -456,6 +425,17 @@ export default function CheckoutPage() {
                         <option value="vodafone">Vodafone / Telecel Cash</option>
                         <option value="airteltigo">AirtelTigo Money</option>
                       </select>
+                      <label className="flex items-start gap-2 pt-1 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={momoConfirmed}
+                          onChange={(e) => setMomoConfirmed(e.target.checked)}
+                          className="mt-1 accent-charcoal"
+                        />
+                        <span className="text-xs text-charcoal">
+                          I confirm I have sent <strong>{formatPrice(total, currency)}</strong> to <strong>{process.env.NEXT_PUBLIC_MOMO_NUMBER}</strong> ({process.env.NEXT_PUBLIC_MOMO_NAME}).
+                        </span>
+                      </label>
                     </div>
                   </div>
                 )}

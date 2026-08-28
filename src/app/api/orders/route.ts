@@ -16,11 +16,16 @@ export async function GET(req: NextRequest) {
 // POST /api/orders — save a new order
 export async function POST(req: NextRequest) {
   const order = await req.json().catch(() => null);
-  if (!order?.id) return NextResponse.json({ ok: false, error: "Invalid order" }, { status: 400 });
+  if (!order?.id) {
+    console.warn("[orders] POST rejected — invalid payload", order);
+    return NextResponse.json({ ok: false, error: "Invalid order" }, { status: 400 });
+  }
   try {
     await saveOrder(order);
+    console.log("[orders] saved", order.id, order.customerEmail, order.total);
     return NextResponse.json({ ok: true });
   } catch (e) {
+    console.error("[orders] save failed for", order.id, e);
     return NextResponse.json({ ok: false, error: String(e) }, { status: 500 });
   }
 }
