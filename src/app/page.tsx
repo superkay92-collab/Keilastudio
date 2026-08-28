@@ -600,6 +600,48 @@ function CheckoutPage({ cart, setCart, setPage, setLastOrder }: { cart: CartItem
     };
     try {
       storageSet(`order:${order.id}`, JSON.stringify(order));
+      // Persist to Supabase so it shows in the admin dashboard
+      const canonicalOrder = {
+        id: order.id,
+        items: items.map((i) => ({
+          product: {
+            id: i.product.id,
+            name: i.product.name,
+            images: i.product.image ? [i.product.image] : [],
+            price: i.product.price,
+          },
+          quantity: i.qty,
+          selectedLength: "-",
+          unitPrice: i.product.price,
+        })),
+        subtotal,
+        shipping: deliveryFee,
+        total,
+        currency: "GHS",
+        status: "pending",
+        customerName: form.name,
+        customerEmail: form.email,
+        customerPhone: form.phone,
+        shippingAddress: {
+          street: delivery === "pickup" ? "Pickup — Adjiringanor, East Legon" : form.address,
+          city: "Accra",
+          region: "Greater Accra",
+          country: "Ghana",
+        },
+        paymentMethod: "momo",
+        paymentReference: `${order.paymentMethod} · ${reference}`,
+        createdAt: order.createdAt,
+        updatedAt: order.createdAt,
+      };
+      fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(canonicalOrder),
+      })
+        .then(async (r) => {
+          if (!r.ok) console.error("[order-save] failed", r.status, await r.text().catch(() => ""));
+        })
+        .catch((err) => console.error("[order-save] network error", err));
       setLastOrder(order); setCart([]); setPage("confirmation");
       // Fire-and-forget: email + SMS alerts to client and staff
       fetch("/api/notify-order", {
