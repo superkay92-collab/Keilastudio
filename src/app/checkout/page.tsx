@@ -148,33 +148,43 @@ export default function CheckoutPage() {
   async function payWithMomo() {
     if (!validate()) return;
     if (!form.momoPhone.trim()) {
-      toast.error("Please enter your MoMo number");
+      toast.error("Please enter the MoMo number you sent from");
       return;
     }
+    if (!confirm(
+      `Please confirm you have sent ${formatPrice(total, currency)} to:\n\n` +
+      `Number: ${process.env.NEXT_PUBLIC_MOMO_NUMBER}\n` +
+      `Name: ${process.env.NEXT_PUBLIC_MOMO_NAME}\n\n` +
+      `Click OK once the transfer is complete.`
+    )) return;
     setLoading(true);
+    const ref = `KSE-MM-${Date.now()}`;
+    const order = buildOrder(ref, "momo");
+    order.status = "pending";
+    order.paymentReference = `Manual MoMo — sender ${form.momoPhone} (${form.momoNetwork})`;
     try {
-      const ref = `KSE-MM-${Date.now()}`;
-      const res = await fetch("/api/momo-charge", {
+      const res = await fetch("/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: form.email,
-          amount: total,
-          phone: form.momoPhone,
-          network: form.momoNetwork,
-          ref,
-        }),
+        body: JSON.stringify(order),
       });
-      const data = await res.json();
       if (!res.ok) {
-        toast.error(data.error ?? "MoMo charge failed");
+        const data = await res.json().catch(() => ({}));
+        console.error("[order-save] failed", res.status, data);
+        toast.error("Could not save your order. Please contact support.");
         setLoading(false);
         return;
       }
-      toast.success(data.displayText ?? "Check your phone to approve the payment.");
-      onSuccess(data.reference, "momo");
-    } catch {
-      toast.error("Something went wrong. Please try again.");
+      fetch("/api/notify-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(order),
+      }).catch(() => {});
+      clearCart();
+      router.push(`/checkout/success?orderId=${order.id}`);
+    } catch (err) {
+      console.error("[order-save] network error", err);
+      toast.error("Network error. Please try again.");
       setLoading(false);
     }
   }
@@ -416,16 +426,17 @@ export default function CheckoutPage() {
                 {payMethod === "momo" && (
                   <div className="mt-4 space-y-3">
                     <div className="border-2 border-[#25D366] bg-[#25D366]/5 p-4 text-sm">
-                      <p className="font-semibold text-[#1a9e4e] mb-2">📱 Vendor MoMo (receiving):</p>
+                      <p className="font-semibold text-[#1a9e4e] mb-2">📱 Send payment to:</p>
                       <div className="space-y-1">
                         <p><span className="text-muted">Number:</span> <strong>{process.env.NEXT_PUBLIC_MOMO_NUMBER ?? "0XX-XXX-XXXX"}</strong></p>
                         <p><span className="text-muted">Name:</span> <strong>{process.env.NEXT_PUBLIC_MOMO_NAME ?? "Keila's Studio Extension"}</strong></p>
                         <p><span className="text-muted">Network:</span> <strong>{process.env.NEXT_PUBLIC_MOMO_NETWORK ?? "MTN"}</strong></p>
+                        <p className="pt-1"><span className="text-muted">Amount:</span> <strong>{formatPrice(total, currency)}</strong></p>
                       </div>
                     </div>
                     <div className="border border-cream-dark p-4 space-y-3">
-                      <p className="text-sm font-semibold">Pay Automatically with MoMo</p>
-                      <p className="text-xs text-muted">Enter your MoMo number below — a payment prompt will be sent to your phone.</p>
+                      <p className="text-sm font-semibold">After sending, confirm below</p>
+                      <p className="text-xs text-muted">Enter the MoMo number you sent from so we can verify your payment. Your order will show as <strong>pending</strong> until we confirm receipt.</p>
                       <input
                         name="momoPhone"
                         type="tel"
@@ -442,7 +453,7 @@ export default function CheckoutPage() {
                         className="w-full border border-cream-dark bg-cream px-4 py-3 text-sm focus:outline-none focus:border-charcoal text-charcoal"
                       >
                         <option value="mtn">MTN Mobile Money</option>
-                        <option value="vodafone">Vodafone Cash</option>
+                        <option value="vodafone">Vodafone / Telecel Cash</option>
                         <option value="airteltigo">AirtelTigo Money</option>
                       </select>
                     </div>
@@ -528,12 +539,17 @@ export default function CheckoutPage() {
                   className="w-full mt-6 bg-charcoal text-cream py-4 text-sm font-medium tracking-wide hover:bg-charcoal/90 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
                 >
                   {loading
-                    ? "Opening payment..."
+                    ? payMethod === "momo"
+                      ? "Saving order..."
+                      : "Opening payment..."
+                    : payMethod === "momo"
+                    ? `I've sent ${formatPrice(total, currency)} — Confirm order`
                     : `Pay ${formatPrice(total, currency)}`}
                 </button>
                 <p className="text-[11px] text-muted text-center mt-3">
-                  🔒 Secured by{" "}
-                  {payMethod === "momo" ? "Paystack (Mobile Money)" : payMethod === "paystack" ? "Paystack" : "Flutterwave"}
+                  {payMethod === "momo"
+                    ? "Your order will be marked pending until we verify the transfer."
+                    : `🔒 Secured by ${payMethod === "paystack" ? "Paystack" : "Flutterwave"}`}
                 </p>
               </div>
             </div>
