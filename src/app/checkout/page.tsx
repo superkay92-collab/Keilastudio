@@ -113,12 +113,29 @@ export default function CheckoutPage() {
 
   function onSuccess(ref: string, method: PayMethod) {
     const order = buildOrder(ref, method);
-    // Save to Supabase + send confirmation email (fire-and-forget)
+    // Save to Supabase — surface failure so orders aren't lost silently.
     fetch("/api/orders", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(order),
-    }).catch(() => {});
+    })
+      .then(async (res) => {
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}));
+          console.error("[order-save] failed", res.status, data);
+          toast.error(
+            "Payment succeeded but we couldn't save your order. Please contact support with reference: " +
+              ref
+          );
+        }
+      })
+      .catch((err) => {
+        console.error("[order-save] network error", err);
+        toast.error(
+          "Payment succeeded but we couldn't save your order. Please contact support with reference: " +
+            ref
+        );
+      });
     fetch("/api/notify-order", {
       method: "POST",
       headers: { "Content-Type": "application/json" },

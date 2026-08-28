@@ -54,3 +54,8 @@ export async function updateOrderStatus(
     .eq("id", id);
   return !error;
 }
+
+export async function deleteOrder(id: string): Promise<boolean> {
+  const { error } = await supabase.from("orders").delete().eq("id", id);
+  return !error;
+}

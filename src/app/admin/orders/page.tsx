@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import type { Order } from "@/types";
 import { cartLineTotal } from "@/lib/cart";
 import toast from "react-hot-toast";
+import { RefreshCw, Trash2 } from "lucide-react";
 
 const STATUS_OPTIONS: Order["status"][] = [
   "pending",
@@ -19,18 +20,37 @@ const STATUS_COLORS: Record<Order["status"], string> = {
   delivered: "bg-green-100 text-green-700",
 };
 
+const REFRESH_INTERVAL_MS = 15000;
+
 export default function AdminOrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [filter, setFilter] = useState<"all" | Order["status"]>("all");
+  const [refreshing, setRefreshing] = useState(false);
+  const [lastRefreshed, setLastRefreshed] = useState<Date | null>(null);
 
-  async function load() {
-    const res = await fetch("/api/orders");
-    const data = await res.json();
-    setOrders(data.orders ?? []);
+  async function load(opts?: { silent?: boolean }) {
+    if (!opts?.silent) setRefreshing(true);
+    try {
+      const res = await fetch("/api/orders", { cache: "no-store" });
+      const data = await res.json();
+      setOrders(data.orders ?? []);
+      setLastRefreshed(new Date());
+    } catch (e) {
+      console.error("[orders] refresh failed", e);
+    } finally {
+      if (!opts?.silent) setRefreshing(false);
+    }
   }
 
   useEffect(() => {
     load();
+    const id = setInterval(() => load({ silent: true }), REFRESH_INTERVAL_MS);
+    const onFocus = () => load({ silent: true });
+    window.addEventListener("focus", onFocus);
+    return () => {
+      clearInterval(id);
+      window.removeEventListener("focus", onFocus);
+    };
   }, []);
 
   async function handleStatusChange(id: string, status: Order["status"]) {
@@ -41,7 +61,18 @@ export default function AdminOrdersPage() {
     });
     if (res.ok) {
       toast.success("Status updated");
-      load();
+      load({ silent: true });
+    }
+  }
+
+  async function handleDelete(id: string) {
+    if (!confirm(`Delete order ${id}? This cannot be undone.`)) return;
+    const res = await fetch(`/api/orders/${id}`, { method: "DELETE" });
+    if (res.ok) {
+      toast.success("Order deleted");
+      load({ silent: true });
+    } else {
+      toast.error("Failed to delete order");
     }
   }
 
@@ -50,7 +81,27 @@ export default function AdminOrdersPage() {
 
   return (
     <div className="p-8">
-      <h1 className="text-2xl font-bold mb-8">Orders</h1>
+      <div className="flex items-center justify-between mb-8">
+        <h1 className="text-2xl font-bold">Orders</h1>
+        <div className="flex items-center gap-3">
+          {lastRefreshed && (
+            <span className="text-xs text-muted">
+              Updated {lastRefreshed.toLocaleTimeString()}
+            </span>
+          )}
+          <button
+            onClick={() => load()}
+            disabled={refreshing}
+            className="flex items-center gap-2 px-3 py-1.5 text-xs border border-cream-dark hover:border-charcoal transition-colors disabled:opacity-50"
+          >
+            <RefreshCw
+              size={12}
+              className={refreshing ? "animate-spin" : ""}
+            />
+            Refresh
+          </button>
+        </div>
+      </div>
 
       {/* Filter tabs */}
       <div className="flex flex-wrap gap-2 mb-6">
@@ -141,7 +192,7 @@ export default function AdminOrdersPage() {
               </div>
 
               {/* Status control */}
-              <div className="flex items-center gap-4 pt-2">
+              <div className="flex items-center gap-4 pt-2 flex-wrap">
                 <span
                   className={`px-3 py-1 text-xs font-medium capitalize rounded ${STATUS_COLORS[order.status]}`}
                 >
@@ -164,6 +215,12 @@ export default function AdminOrdersPage() {
                     </option>
                   ))}
                 </select>
+                <button
+                  onClick={() => handleDelete(order.id)}
+                  className="ml-auto flex items-center gap-1.5 text-xs text-red-600 hover:text-red-700 hover:underline"
+                >
+                  <Trash2 size={12} /> Delete
+                </button>
               </div>
             </div>
           ))}

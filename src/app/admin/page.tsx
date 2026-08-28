@@ -16,9 +16,19 @@ export default function AdminDashboard() {
   const [orders, setOrders] = useState<Order[]>([]);
 
   useEffect(() => {
-    fetch("/api/orders")
-      .then((r) => r.json())
-      .then((data) => setOrders(data.orders ?? []));
+    const load = () =>
+      fetch("/api/orders", { cache: "no-store" })
+        .then((r) => r.json())
+        .then((data) => setOrders(data.orders ?? []))
+        .catch(() => {});
+    load();
+    const id = setInterval(load, 15000);
+    const onFocus = () => load();
+    window.addEventListener("focus", onFocus);
+    return () => {
+      clearInterval(id);
+      window.removeEventListener("focus", onFocus);
+    };
   }, []);
 
   const revenue = orders.reduce((s, o) => s + o.total, 0);
